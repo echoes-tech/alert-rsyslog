@@ -17,7 +17,7 @@ $DefaultNetstreamDriverCertFile /etc/ssl/echoes-tech.com/cert-echoes-tech.com.cr
 $DefaultNetstreamDriverKeyFile /etc/ssl/echoes-tech.com/echoes-tech.com.key
 
 $RuleSet echoes-alert
-*.* :ompgsql:<%= hostname %>,<%= dbname %>,<%= user %>,<%= password %>;pgsqlinsert
+*.=info		:ompgsql:<%= hostname %>,<%= dbname %>,<%= user %>,<%= password %>;pgsqlinsert
 
 $InputTCPServerBindRuleset echoes-alert
 $InputTCPServerStreamDriverMode 1 # run driver in TLS-only mode
