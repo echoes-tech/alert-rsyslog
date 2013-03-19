@@ -14,6 +14,8 @@
 #ifndef SDELEMENT_H
 #define	SDELEMENT_H
 
+#include <tools/SessionPool.h>
+
 #include "SDID.h"
 #include "SDParam.h"
 
@@ -21,7 +23,7 @@ typedef boost::shared_ptr<SDParam> SDParamPtr;
 
 class SDElement {
     public:
-        SDElement(std::string &content);
+        SDElement(const std::string &content);
         SDElement(const SDElement& orig);
         std::string getContent() const;
         SDID* getSDIDPtr() const;

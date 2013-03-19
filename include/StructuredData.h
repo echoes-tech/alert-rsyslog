@@ -14,27 +14,33 @@
 #ifndef StructuredData_H
 #define	StructuredData_H
 
-#include "SDElement.h"
+#include <tools/SessionPool.h>
 
-typedef boost::shared_ptr<SDElement> SDElementPtr;
+#include "SDElement.h"
+#include "SDElementProp.h"
+#include "SDElementRes.h"
+
+typedef boost::shared_ptr<SDElementRes> SDElementResPtr;
 
 class StructuredData {
     public:
-        StructuredData(std::istream &input);
+        StructuredData(const std::string &content, const long long &syslogID, Session *session);
         StructuredData(const StructuredData& orig);
         std::string getContent() const;
-        std::vector<SDElementPtr> getSDElementsPtr() const;
+        std::vector<SDElementResPtr> getSDElementsResPtr() const;
+        SDElementProp* getSDElementPropPtr() const;
         virtual ~StructuredData();
 
     private:
         std::string _content;
-        std::vector<SDElementPtr> _sdElementsPtr;
+        SDElementProp *_sdElementPropPtr;
+        std::vector<SDElementResPtr> _sdElementsResPtr;
 
-        void setContent(std::istream& input);
         void setContent(std::string content);
-        void splitSDElements();
-        void setSDElementsPtr(std::vector<SDElementPtr> _sdElementsPtr);
-        void addSDElementPtr(SDElementPtr sdElementPtr);
+        void splitSDElements(const long long &syslogID, Session *session);
+        void setSDElementsResPtr(std::vector<SDElementResPtr> _sdElementsResPtr);
+        void addSDElementResPtr(SDElementRes *sdElementResPtr);
+        void setSDElementPropPtr(SDElementProp *sdElementProp);
 };
 
 #endif	/* StructuredData_H */

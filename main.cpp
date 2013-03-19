@@ -11,36 +11,41 @@
  * 
  */
 
-#include <tools/Session.h>
-
 #include "Conf.h"
 #include "StructuredData.h"
+#include "SyslogInsert.h"
 
 using namespace std;
+
+SessionPool* SessionPool::instance = 0;
+string SessionPool::credentials = "";
+boost::mutex SessionPool::mutex;
 
 /*
  * 
  */
 int main(int argc, char** argv) {
-//    string token("");
-//    unsigned probeVersion;
+    int res = EXIT_SUCCESS;
+    Conf *conf = NULL;
+    Session *session = NULL;
 
-    Conf *conf = new Conf();
+    // Loading conf
+    conf = new Conf();
+    if (conf->getDBPort() != 0)
+    {    
+        // Setting the session
+        session = new Session(conf->getSessConnectParams());
 
-    string connection = "hostaddr=" + conf->getDBHost() +
-                        " port=" + boost::lexical_cast<string>(conf->getDBPort()) +
-                        " dbname=" + conf->getDBName() +
-                        " user=" + conf->getDBUser() +
-                        " password=" + conf->getDBPassword();
-    
-    // Setting the session
-//    session = new Session(connection);
+        // Processing the Syslog Insertion and detection Structured Data
+        SyslogInsert *syslogInsert = new SyslogInsert(cin, session);
 
-    StructuredData *sd = new StructuredData(cin);
-
-//    parseProperties(sd->getSDProp, probeVersion, token);
-//    parseAndStoreRes(sd->getSDRes, probeVersion, token);
+        StructuredData *sd = new StructuredData(syslogInsert->getSD(), syslogInsert->getID(), session);
+    }
+    else
+    {
+        res = EXIT_FAILURE;
+    }
   
-    return 0;
+    return res;
 }
 

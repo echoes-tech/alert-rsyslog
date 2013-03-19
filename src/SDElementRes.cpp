@@ -15,7 +15,7 @@
 
 using namespace std;
 
-SDElementRes::SDElementRes(SDElement& sdElement) : SDElement(sdElement) {
+SDElementRes::SDElementRes(const SDElement& sdElement) : SDElement(sdElement) {
     detectResKeys();
 }
 

@@ -15,24 +15,20 @@
 
 using namespace std;
 
-StructuredData::StructuredData(istream &input)
+// Retrieve SD given by this binary
+StructuredData::StructuredData(const string &content, const long long &syslogID, Session *session)
 {
-    // Retrieve SD given by rsyslog
-    setContent(input);
-    splitSDElements();
+    setSDElementPropPtr(NULL);
+    setContent(content);
+
+    splitSDElements(syslogID, session);
 }
 
 StructuredData::StructuredData(const StructuredData& orig)
 {
     setContent(orig.getContent());
-    setSDElementsPtr(orig.getSDElementsPtr());
-}
-
-void StructuredData::setContent(istream& input)
-{
-    getline(input, _content);
-
-    return;
+    setSDElementsResPtr(orig.getSDElementsResPtr());
+    setSDElementPropPtr(orig.getSDElementPropPtr());
 }
 
 void StructuredData::setContent(string content)
@@ -47,13 +43,13 @@ string StructuredData::getContent() const
     return _content;
 }
 
-void StructuredData::splitSDElements()
+void StructuredData::splitSDElements(const long long &syslogID, Session *session)
 {
     // Warning : this method doesn't work well if the value of SD-Params can contain the chars '[' ']'
     
     string sdTmp(_content);
     vector<string> sSDElements;
-    SDElementPtr sdElementPtr;
+    SDElement *sdElement = NULL;
 
     // SD-Element example : [prop@40311 ver=2 probe=0 token="abcdefghijklmo0123456789"][res1@40311 offset=2 4-1-3-4-1-1-1="U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE" 4-1-3-4-2-1-1="U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE"]
     
@@ -68,33 +64,57 @@ void StructuredData::splitSDElements()
 
     for (unsigned i = 0; i < sSDElements.size(); ++i)
     {
-        sdElementPtr.reset( new SDElement(sSDElements[i]) );
+        sdElement = new SDElement(sSDElements[i] );
 
-        addSDElementPtr(sdElementPtr);
+        if(sdElement->getSDIDPtr()->getName().compare("prop"))
+        {
+            setSDElementPropPtr(new SDElementProp(*sdElement, syslogID, session));
+        }
+        else
+        {
+            addSDElementResPtr(new SDElementRes(*sdElement));
+        }
+        
+        delete(sdElement);
     }
     
     return;
 }
 
-void StructuredData::setSDElementsPtr(vector<SDElementPtr> sdElementsPtr) {
-    _sdElementsPtr = sdElementsPtr;
+void StructuredData::setSDElementsResPtr(vector<SDElementResPtr> sdElementsResPtr) {
+    _sdElementsResPtr = sdElementsResPtr;
 }
 
-void StructuredData::addSDElementPtr(SDElementPtr sdElementPtr)
+void StructuredData::addSDElementResPtr(SDElementRes *sdElementResPtr)
 {
-    _sdElementsPtr.push_back(sdElementPtr);
+    SDElementResPtr _sdElementResPtr(sdElementResPtr);
+
+    _sdElementsResPtr.push_back(_sdElementResPtr);
 
     return;
 }
 
-vector<SDElementPtr> StructuredData::getSDElementsPtr() const
+vector<SDElementResPtr> StructuredData::getSDElementsResPtr() const
 {
-    return _sdElementsPtr;
+    return _sdElementsResPtr;
+}
+
+void StructuredData::setSDElementPropPtr(SDElementProp *sdElementPropPtr) {
+    _sdElementPropPtr = sdElementPropPtr;
+
+    return;
+}
+
+SDElementProp* StructuredData::getSDElementPropPtr() const {
+    return _sdElementPropPtr;
 }
 
 StructuredData::~StructuredData()
 {
+    if (_sdElementPropPtr != NULL)
+    {
+        delete(_sdElementPropPtr);
+    }
 }
-
 
 

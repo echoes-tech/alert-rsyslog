@@ -42,7 +42,8 @@ OBJECTFILES= \
 	${OBJECTDIR}/src/SDElementRes.o \
 	${OBJECTDIR}/src/SDID.o \
 	${OBJECTDIR}/src/SDParam.o \
-	${OBJECTDIR}/src/StructuredData.o
+	${OBJECTDIR}/src/StructuredData.o \
+	${OBJECTDIR}/src/SyslogInsert.o
 
 
 # C Compiler Flags
@@ -108,6 +109,11 @@ ${OBJECTDIR}/src/StructuredData.o: src/StructuredData.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
 	$(COMPILE.cc) -g -Wall -Iinclude -I../dbo/include -std=c++11 -pedantic -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/StructuredData.o src/StructuredData.cpp
+
+${OBJECTDIR}/src/SyslogInsert.o: src/SyslogInsert.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} $@.d
+	$(COMPILE.cc) -g -Wall -Iinclude -I../dbo/include -std=c++11 -pedantic -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/SyslogInsert.o src/SyslogInsert.cpp
 
 # Subprojects
 .build-subprojects:

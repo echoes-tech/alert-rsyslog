@@ -15,10 +15,10 @@
 
 using namespace std;
 
-SDElement::SDElement(string &content) {
-    _sdIDPtr = NULL;
-    
+SDElement::SDElement(const string &content) {
+    setSDIDPtr(NULL);
     setContent(content);
+
     detectSDID();
     splitSDParams();
 }
@@ -57,7 +57,7 @@ void SDElement::detectSDID()
                 }
                 catch (boost::bad_lexical_cast &)
                 {
-                    std::cout << "** Probe version is not an unsigned on SD-Element Prop **\n";
+                    std::cout << "** PEN is not an unsigned on SD-Element Prop **\n";
                 }
             }
             else
@@ -134,6 +134,9 @@ vector<SDParamPtr> SDElement::getSDParamsPtr() const
 }
 
 SDElement::~SDElement() {
-    delete(_sdIDPtr);
+    if (_sdIDPtr != NULL)
+    {
+        delete(_sdIDPtr);
+    }
 }
 

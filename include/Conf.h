@@ -29,17 +29,26 @@ class Conf {
         std::string getDBName() const;
         std::string getDBUser() const;
         std::string getDBPassword() const;
+        std::string getSessConnectParams() const;
         virtual ~Conf();
 
     protected:
-        std::string _dBhost, _dBname, _dBuser, _dBpassword;
+        std::string _dBhost, _dBname, _dBuser, _dBpassword, _sessConnectParams;
         unsigned _dBport;
 
         void setDBport(unsigned _dBport);
-        void setDBpassword(std::string _dBpassword);
-        void setDBuser(std::string _dBuser);
-        void setDBname(std::string _dBname);
-        void setDBhost(std::string _dBhost);
+        void setDBpassword(std::string dBpassword);
+        void setDBuser(std::string dBuser);
+        void setDBname(std::string dBname);
+        void setDBhost(std::string dBhost);
+        void setSessConnectParams
+        (
+                std::string dBhost,
+                unsigned dBport,
+                std::string dBname,
+                std::string dBuser,
+                std::string dBpassword
+        );
 };
 
 #endif	/* CONF_H */

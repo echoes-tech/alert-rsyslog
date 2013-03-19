@@ -17,6 +17,8 @@ using namespace std;
 
 Conf::Conf()
 {
+    setDBport(0);
+    
     // Create an empty property tree object
     using boost::property_tree::ptree;
     ptree pt;
@@ -25,7 +27,7 @@ Conf::Conf()
     // (cannot open file, parse error), an exception is thrown.
     try
     {
-        boost::property_tree::read_ini("ea-parser.conf", pt);
+        boost::property_tree::read_ini("etc/rsyslog.d/ea-parser.conf", pt);
         setDBhost(pt.get<string>("database.host"));
         setDBport(pt.get<unsigned>("database.port"));
         setDBname(pt.get<string>("database.name"));
@@ -35,7 +37,7 @@ Conf::Conf()
     }
     catch (boost::property_tree::ini_parser_error e)
     {
-        Wt::log("error") << "[CONF] " << e.what();
+        Wt::log("error") << "[Conf] " << e.what();
     }
 }
 
@@ -105,6 +107,36 @@ void Conf::setDBpassword(std::string dBpassword)
 string Conf::getDBPassword() const
 {
     return _dBpassword;
+}
+
+void Conf::setSessConnectParams
+(
+        string dBhost,
+        unsigned dBport,
+        string dBname,
+        string dBuser,
+        string dBpassword
+)
+{   
+    try
+    {
+        _sessConnectParams = "hostaddr=" + dBhost +
+                             " port=" + boost::lexical_cast<string>(dBport) +
+                             " dbname=" + dBname +
+                             " user=" + dBuser +
+                             " password=" + dBpassword;
+    }
+    catch (boost::bad_lexical_cast &)
+    {
+         Wt::log("error") << "[Conf] sdPort is not an unsigned";
+    }
+
+    return;
+}
+
+string Conf::getSessConnectParams() const
+{
+    return _sessConnectParams;
 }
 
 Conf::~Conf() {

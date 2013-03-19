@@ -18,7 +18,7 @@
 
 class SDElementRes : public SDElement {
     public:
-        SDElementRes(SDElement& sdElement);
+        SDElementRes(const SDElement& sdElement);
         SDElementRes(const SDElementRes& orig);
         unsigned getOffset() const;
         unsigned getIDPlugin() const;
