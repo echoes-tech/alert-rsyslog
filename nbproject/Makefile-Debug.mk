@@ -35,8 +35,8 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/_ext/324370602/Conf.o \
 	${OBJECTDIR}/main.o \
+	${OBJECTDIR}/src/Conf.o \
 	${OBJECTDIR}/src/SDElement.o \
 	${OBJECTDIR}/src/SDElementProp.o \
 	${OBJECTDIR}/src/SDElementRes.o \
@@ -71,15 +71,15 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/rsyslog: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/rsyslog ${OBJECTFILES} ${LDLIBSOPTIONS}
 
-${OBJECTDIR}/_ext/324370602/Conf.o: /home/fpo/Dev/echoes-alert/rsyslog/src/Conf.cpp 
-	${MKDIR} -p ${OBJECTDIR}/_ext/324370602
-	${RM} $@.d
-	$(COMPILE.cc) -g -Wall -Iinclude -I../dbo/include -std=c++11 -pedantic -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/324370602/Conf.o /home/fpo/Dev/echoes-alert/rsyslog/src/Conf.cpp
-
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -Wall -Iinclude -I../dbo/include -std=c++11 -pedantic -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
+
+${OBJECTDIR}/src/Conf.o: src/Conf.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} $@.d
+	$(COMPILE.cc) -g -Wall -Iinclude -I../dbo/include -std=c++11 -pedantic -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/Conf.o src/Conf.cpp
 
 ${OBJECTDIR}/src/SDElement.o: src/SDElement.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src

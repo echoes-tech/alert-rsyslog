@@ -6,14 +6,14 @@
         <itemPath>etc/rsyslog.d/ea-parser.conf</itemPath>
         <itemPath>etc/rsyslog.d/ea-parser.conf.erb</itemPath>
         <itemPath>etc/rsyslog.d/echoes-alert.conf.erb</itemPath>
-        <itemPath>/home/fpo/Dev/echoes-alert/rsyslog/etc/rsyslog.d/pgsql.conf</itemPath>
+        <itemPath>etc/rsyslog.d/pgsql.conf</itemPath>
       </logicalFolder>
-      <itemPath>/home/fpo/Dev/echoes-alert/rsyslog/etc/rsyslog.conf</itemPath>
+      <itemPath>etc/rsyslog.conf</itemPath>
     </logicalFolder>
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
-      <itemPath>/home/fpo/Dev/echoes-alert/rsyslog/include/Conf.h</itemPath>
+      <itemPath>include/Conf.h</itemPath>
       <itemPath>include/SDElement.h</itemPath>
       <itemPath>include/SDElementProp.h</itemPath>
       <itemPath>include/SDElementRes.h</itemPath>
@@ -31,7 +31,7 @@
                    displayName="Source Files"
                    projectFiles="true">
       <logicalFolder name="src" displayName="src" projectFiles="true">
-        <itemPath>/home/fpo/Dev/echoes-alert/rsyslog/src/Conf.cpp</itemPath>
+        <itemPath>src/Conf.cpp</itemPath>
         <itemPath>src/SDElement.cpp</itemPath>
         <itemPath>src/SDElementProp.cpp</itemPath>
         <itemPath>src/SDElementRes.cpp</itemPath>
@@ -88,25 +88,7 @@
           </linkerLibItems>
         </linkerTool>
       </compileType>
-      <item path="/home/fpo/Dev/echoes-alert/rsyslog/etc/rsyslog.conf"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="/home/fpo/Dev/echoes-alert/rsyslog/etc/rsyslog.d/pgsql.conf"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="/home/fpo/Dev/echoes-alert/rsyslog/include/Conf.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="/home/fpo/Dev/echoes-alert/rsyslog/src/Conf.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
+      <item path="etc/rsyslog.conf" ex="false" tool="3" flavor2="0">
       </item>
       <item path="etc/rsyslog.d/ea-parser.conf" ex="false" tool="3" flavor2="0">
       </item>
@@ -116,6 +98,10 @@
             ex="false"
             tool="3"
             flavor2="0">
+      </item>
+      <item path="etc/rsyslog.d/pgsql.conf" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/Conf.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="include/SDElement.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -134,6 +120,8 @@
       <item path="include/SyslogInsert.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/Conf.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/SDElement.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -162,7 +150,16 @@
           <developmentMode>5</developmentMode>
         </cTool>
         <ccTool>
-          <developmentMode>5</developmentMode>
+          <developmentMode>6</developmentMode>
+          <stripSymbols>true</stripSymbols>
+          <commandlineTool>g++-4.4</commandlineTool>
+          <incDir>
+            <pElem>include</pElem>
+            <pElem>../dbo/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>/var/lib/jenkins/jobs/ea-dbo-${release}/workspace/include</Elem>
+          </preprocessorList>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>
@@ -170,26 +167,16 @@
         <asmTool>
           <developmentMode>5</developmentMode>
         </asmTool>
+        <linkerTool>
+          <linkerAddLib>
+            <pElem>../dbo/dist/Release_SharedObject/GNU-Linux-x86</pElem>
+            <pElem>/var/lib/jenkins/jobs/ea-dbo-${release}/workspace/default/dist/Release_SharedObject/GNU-Linux-x86</pElem>
+          </linkerAddLib>
+          <stripSymbols>true</stripSymbols>
+          <commandlineTool>g++-4.4</commandlineTool>
+        </linkerTool>
       </compileType>
-      <item path="/home/fpo/Dev/echoes-alert/rsyslog/etc/rsyslog.conf"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="/home/fpo/Dev/echoes-alert/rsyslog/etc/rsyslog.d/pgsql.conf"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="/home/fpo/Dev/echoes-alert/rsyslog/include/Conf.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="/home/fpo/Dev/echoes-alert/rsyslog/src/Conf.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
+      <item path="etc/rsyslog.conf" ex="false" tool="3" flavor2="0">
       </item>
       <item path="etc/rsyslog.d/ea-parser.conf" ex="false" tool="3" flavor2="0">
       </item>
@@ -199,6 +186,10 @@
             ex="false"
             tool="3"
             flavor2="0">
+      </item>
+      <item path="etc/rsyslog.d/pgsql.conf" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/Conf.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="include/SDElement.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -217,6 +208,8 @@
       <item path="include/SyslogInsert.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/Conf.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/SDElement.cpp" ex="false" tool="1" flavor2="0">
       </item>

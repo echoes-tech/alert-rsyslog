@@ -15,8 +15,8 @@ NM=nm
 CCADMIN=CCadmin
 RANLIB=ranlib
 CC=gcc
-CCC=distcc
-CXX=distcc
+CCC=g++-4.4
+CXX=g++-4.4
 FC=gfortran
 AS=as
 
@@ -35,8 +35,8 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/_ext/324370602/Conf.o \
 	${OBJECTDIR}/main.o \
+	${OBJECTDIR}/src/Conf.o \
 	${OBJECTDIR}/src/SDElement.o \
 	${OBJECTDIR}/src/SDElementProp.o \
 	${OBJECTDIR}/src/SDElementRes.o \
@@ -61,7 +61,7 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=
+LDLIBSOPTIONS=-L../dbo/dist/Release_SharedObject/GNU-Linux-x86 -L/var/lib/jenkins/jobs/ea-dbo-${release}/workspace/default/dist/Release_SharedObject/GNU-Linux-x86
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
@@ -69,57 +69,57 @@ LDLIBSOPTIONS=
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/rsyslog: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/rsyslog ${OBJECTFILES} ${LDLIBSOPTIONS}
-
-${OBJECTDIR}/_ext/324370602/Conf.o: /home/fpo/Dev/echoes-alert/rsyslog/src/Conf.cpp 
-	${MKDIR} -p ${OBJECTDIR}/_ext/324370602
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/324370602/Conf.o /home/fpo/Dev/echoes-alert/rsyslog/src/Conf.cpp
+	g++-4.4 -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/rsyslog ${OBJECTFILES} ${LDLIBSOPTIONS} -s
 
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
+	$(COMPILE.cc) -O3 -s -D/var/lib/jenkins/jobs/ea-dbo-${release}/workspace/include -Iinclude -I../dbo/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
+
+${OBJECTDIR}/src/Conf.o: src/Conf.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} $@.d
+	$(COMPILE.cc) -O3 -s -D/var/lib/jenkins/jobs/ea-dbo-${release}/workspace/include -Iinclude -I../dbo/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/Conf.o src/Conf.cpp
 
 ${OBJECTDIR}/src/SDElement.o: src/SDElement.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/SDElement.o src/SDElement.cpp
+	$(COMPILE.cc) -O3 -s -D/var/lib/jenkins/jobs/ea-dbo-${release}/workspace/include -Iinclude -I../dbo/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/SDElement.o src/SDElement.cpp
 
 ${OBJECTDIR}/src/SDElementProp.o: src/SDElementProp.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/SDElementProp.o src/SDElementProp.cpp
+	$(COMPILE.cc) -O3 -s -D/var/lib/jenkins/jobs/ea-dbo-${release}/workspace/include -Iinclude -I../dbo/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/SDElementProp.o src/SDElementProp.cpp
 
 ${OBJECTDIR}/src/SDElementRes.o: src/SDElementRes.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/SDElementRes.o src/SDElementRes.cpp
+	$(COMPILE.cc) -O3 -s -D/var/lib/jenkins/jobs/ea-dbo-${release}/workspace/include -Iinclude -I../dbo/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/SDElementRes.o src/SDElementRes.cpp
 
 ${OBJECTDIR}/src/SDID.o: src/SDID.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/SDID.o src/SDID.cpp
+	$(COMPILE.cc) -O3 -s -D/var/lib/jenkins/jobs/ea-dbo-${release}/workspace/include -Iinclude -I../dbo/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/SDID.o src/SDID.cpp
 
 ${OBJECTDIR}/src/SDParam.o: src/SDParam.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/SDParam.o src/SDParam.cpp
+	$(COMPILE.cc) -O3 -s -D/var/lib/jenkins/jobs/ea-dbo-${release}/workspace/include -Iinclude -I../dbo/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/SDParam.o src/SDParam.cpp
 
 ${OBJECTDIR}/src/SDParamRes.o: src/SDParamRes.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/SDParamRes.o src/SDParamRes.cpp
+	$(COMPILE.cc) -O3 -s -D/var/lib/jenkins/jobs/ea-dbo-${release}/workspace/include -Iinclude -I../dbo/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/SDParamRes.o src/SDParamRes.cpp
 
 ${OBJECTDIR}/src/StructuredData.o: src/StructuredData.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/StructuredData.o src/StructuredData.cpp
+	$(COMPILE.cc) -O3 -s -D/var/lib/jenkins/jobs/ea-dbo-${release}/workspace/include -Iinclude -I../dbo/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/StructuredData.o src/StructuredData.cpp
 
 ${OBJECTDIR}/src/SyslogInsert.o: src/SyslogInsert.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/SyslogInsert.o src/SyslogInsert.cpp
+	$(COMPILE.cc) -O3 -s -D/var/lib/jenkins/jobs/ea-dbo-${release}/workspace/include -Iinclude -I../dbo/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/SyslogInsert.o src/SyslogInsert.cpp
 
 # Subprojects
 .build-subprojects:
