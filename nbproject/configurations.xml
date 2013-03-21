@@ -156,10 +156,9 @@
           <incDir>
             <pElem>include</pElem>
             <pElem>../dbo/include</pElem>
+            <pElem>/var/lib/jenkins/jobs/ea-dbo-${target}/workspace/include</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>/var/lib/jenkins/jobs/ea-dbo-${target}/workspace/include</Elem>
-          </preprocessorList>
+          <commandLine>-std=c++0x</commandLine>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>
