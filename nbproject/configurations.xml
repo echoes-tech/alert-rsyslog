@@ -158,7 +158,7 @@
             <pElem>../dbo/include</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>/var/lib/jenkins/jobs/ea-dbo-${release}/workspace/include</Elem>
+            <Elem>/var/lib/jenkins/jobs/ea-dbo-${target}/workspace/include</Elem>
           </preprocessorList>
         </ccTool>
         <fortranCompilerTool>
@@ -170,7 +170,7 @@
         <linkerTool>
           <linkerAddLib>
             <pElem>../dbo/dist/Release_SharedObject/GNU-Linux-x86</pElem>
-            <pElem>/var/lib/jenkins/jobs/ea-dbo-${release}/workspace/default/dist/Release_SharedObject/GNU-Linux-x86</pElem>
+            <pElem>/var/lib/jenkins/jobs/ea-dbo-${target}/workspace/default/dist/Release_SharedObject/GNU-Linux-x86</pElem>
           </linkerAddLib>
           <stripSymbols>true</stripSymbols>
           <commandlineTool>g++-4.4</commandlineTool>
