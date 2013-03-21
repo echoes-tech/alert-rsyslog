@@ -18,10 +18,7 @@ using namespace std;
 SDElementProp::SDElementProp(const SDElement& sdElement, const long long &syslogID, Session *session) : SDElement(sdElement)
 {
     detectPropKeys(session);
-    if(isValidToken())
-    {
-        updateSyslog(syslogID, session);
-    }
+    updateSyslog(syslogID, session);
 }
 
 SDElementProp::SDElementProp(const SDElementProp& orig) : SDElement(orig)
@@ -35,7 +32,7 @@ void SDElementProp::detectPropKeys(Session *session)
 {
     for (unsigned i(0); i < _sdParamsPtr.size(); ++i)
     {
-        if (_sdParamsPtr[i]->getKey().compare("ver"))
+        if (boost::equals(_sdParamsPtr[i]->getKey(), "ver"))
         {
             try
             {
@@ -43,10 +40,10 @@ void SDElementProp::detectPropKeys(Session *session)
             }
             catch (boost::bad_lexical_cast &)
             {
-                std::cout << "** Version is not an unsigned on SD-Element Prop **\n";
+                Wt::log("error") << "[SDElementProp] Version is not an unsigned on SD-Element Prop";
             }
         }
-        else if (_sdParamsPtr[i]->getKey().compare("probe"))
+        else if (boost::equals(_sdParamsPtr[i]->getKey(), "probe"))
         {
             try
             {
@@ -55,10 +52,10 @@ void SDElementProp::detectPropKeys(Session *session)
             }
             catch (boost::bad_lexical_cast &)
             {
-                std::cout << "** Probe ID is not an unsigned on SD-Element Prop **\n";
+                Wt::log("error") << "[SDElement] Probe ID is not an unsigned on SD-Element Prop";
             }
         }
-        else if (_sdParamsPtr[i]->getKey().compare("token"))
+        else if (boost::equals(_sdParamsPtr[i]->getKey(), "token"))
         {
             setToken(_sdParamsPtr[i]->getValue());
         }
@@ -79,14 +76,27 @@ string SDElementProp::getToken() const
     return _token;
 }
 
-bool SDElementProp::isValidToken() const
+bool SDElementProp::isValidToken(Session *session) const
 {
     bool res = false;
 
-    if (_token.compare("\"" + _probeWtDBOPtr->organization.get()->token.toUTF8() + "\""))
-        Wt::log("error") << " [SDElementProp] Token not matching organization token.";
+    if(_probeWtDBOPtr)
+    {
+        try
+        {   
+            Wt::Dbo::Transaction transaction(*session);
+            if (_token.compare(_probeWtDBOPtr->organization->token.toUTF8()))
+                Wt::log("error") << " [SDElementProp] Token not matching organization token.";
+            else
+                res = true;
+        }
+        catch (Wt::Dbo::Exception e)
+        {
+            Wt::log("error") << " [SDElementProp] " << e.what() ;
+        }
+    }
     else
-        res = true;
+        Wt::log("error") << " [SDElementProp] Probe doesn't exist.";
 
     return res;
 }
@@ -148,8 +158,14 @@ void SDElementProp::updateSyslog(long long syslogID, Session *session)
     {
         Wt::Dbo::Transaction transaction(*session);
         Wt::Dbo::ptr<Syslog> syslogPtr = session->find<Syslog>().where("\"SLO_ID\" = ?").bind(boost::lexical_cast<string>(syslogID)).limit(1);
-        syslogPtr.modify()->version = _version;
-        syslogPtr.modify()->probe = _probeWtDBOPtr;
+        
+        if(isValidToken(session))
+        {
+            syslogPtr.modify()->version = _version;
+            syslogPtr.modify()->probe = _probeWtDBOPtr;
+        }
+        else
+            syslogPtr.modify()->state = 3;
 
         transaction.commit();
     }
@@ -162,5 +178,7 @@ void SDElementProp::updateSyslog(long long syslogID, Session *session)
     
 SDElementProp::~SDElementProp()
 {
+    delete _sdIDPtr;
+    _sdIDPtr = NULL;
 }
 

@@ -17,7 +17,13 @@ using namespace std;
 
 SDParam::SDParam(const string &content) {
     setContent(content);
-    splitKeyValue();
+    setKey("");
+    setValue("");     
+
+    if(_content.compare(""))
+        splitKeyValue();
+    else
+        Wt::log("error") << "[SDParam] Content is empty";
 }
 
 SDParam::SDParam(const SDParam& orig) {
@@ -40,25 +46,26 @@ string SDParam::getContent() const
 
 void SDParam::splitKeyValue()
 {
-    string KeyValueTmp(_content), valueTmp;
-    vector<string> sKeyValue;
+    string valueTmp;
     
-    //4-1-3-4-1-1-1="U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE"
+    // Example : 4-1-3-4-1-1-1="U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE"
 
-    boost::split(sKeyValue, KeyValueTmp, boost::is_any_of("="), boost::token_compress_on);
-    setKey(sKeyValue[0]);
-    
-    //"U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE"
-    valueTmp = sKeyValue[1];
-    
+    unsigned pos = _content.find_first_of('=');
+
+    setKey(_content.substr(0, pos));
+
+    // Example : "U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE"
+    valueTmp = _content.substr(pos + 1);
+
     if (boost::starts_with(valueTmp, "\"") && boost::ends_with(valueTmp, "\"") )
     {
         boost::erase_head(valueTmp, 1);
         boost::erase_tail(valueTmp, 1);
     }
-    
+
+    // Example : U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE
     setValue(valueTmp);
-    
+
     return;
 }
 

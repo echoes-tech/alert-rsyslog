@@ -19,6 +19,7 @@
       <itemPath>include/SDElementRes.h</itemPath>
       <itemPath>include/SDID.h</itemPath>
       <itemPath>include/SDParam.h</itemPath>
+      <itemPath>include/SDParamRes.h</itemPath>
       <itemPath>include/StructuredData.h</itemPath>
       <itemPath>include/SyslogInsert.h</itemPath>
     </logicalFolder>
@@ -36,9 +37,10 @@
         <itemPath>src/SDElementRes.cpp</itemPath>
         <itemPath>src/SDID.cpp</itemPath>
         <itemPath>src/SDParam.cpp</itemPath>
+        <itemPath>src/SDParamRes.cpp</itemPath>
         <itemPath>src/StructuredData.cpp</itemPath>
+        <itemPath>src/SyslogInsert.cpp</itemPath>
       </logicalFolder>
-      <itemPath>src/SyslogInsert.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
@@ -125,6 +127,8 @@
       </item>
       <item path="include/SDParam.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="include/SDParamRes.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="include/StructuredData.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="include/SyslogInsert.h" ex="false" tool="3" flavor2="0">
@@ -140,6 +144,8 @@
       <item path="src/SDID.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/SDParam.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/SDParamRes.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/StructuredData.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -204,6 +210,8 @@
       </item>
       <item path="include/SDParam.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="include/SDParamRes.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="include/StructuredData.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="include/SyslogInsert.h" ex="false" tool="3" flavor2="0">
@@ -219,6 +227,8 @@
       <item path="src/SDID.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/SDParam.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/SDParamRes.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/StructuredData.cpp" ex="false" tool="1" flavor2="0">
       </item>

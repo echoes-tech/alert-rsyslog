@@ -25,27 +25,43 @@ boost::mutex SessionPool::mutex;
  * 
  */
 int main(int argc, char** argv) {
-    int res = EXIT_SUCCESS;
+    int res = EXIT_FAILURE;
     Conf *conf = NULL;
     Session *session = NULL;
+    string input = "";
 
     // Loading conf
     conf = new Conf();
     if (conf->getDBPort() != 0)
-    {    
+    {
+        SyslogInsert *syslogInsert = NULL;
+        StructuredData *sd = NULL;
+
         // Setting the session
         session = new Session(conf->getSessConnectParams());
 
-        // Processing the Syslog Insertion and detection Structured Data
-        SyslogInsert *syslogInsert = new SyslogInsert(cin, session);
+        getline(cin, input);
 
-        StructuredData *sd = new StructuredData(syslogInsert->getSD(), syslogInsert->getID(), session);
+        while (input.compare("EOF"))
+        {
+            // Processing the Syslog Insertion and detection Structured Data
+            syslogInsert = new SyslogInsert(input, session);
+
+            sd = new StructuredData(syslogInsert->getSD(), syslogInsert->getID(), session);
+
+            delete sd;
+            delete syslogInsert;
+
+            getline(cin, input);
+        }
+
+        delete session;
+
+        res = EXIT_SUCCESS;
     }
-    else
-    {
-        res = EXIT_FAILURE;
-    }
-  
+
+    delete conf;
+
     return res;
 }
 

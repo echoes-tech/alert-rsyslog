@@ -42,6 +42,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/src/SDElementRes.o \
 	${OBJECTDIR}/src/SDID.o \
 	${OBJECTDIR}/src/SDParam.o \
+	${OBJECTDIR}/src/SDParamRes.o \
 	${OBJECTDIR}/src/StructuredData.o \
 	${OBJECTDIR}/src/SyslogInsert.o
 
@@ -104,6 +105,11 @@ ${OBJECTDIR}/src/SDParam.o: src/SDParam.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/SDParam.o src/SDParam.cpp
+
+${OBJECTDIR}/src/SDParamRes.o: src/SDParamRes.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/SDParamRes.o src/SDParamRes.cpp
 
 ${OBJECTDIR}/src/StructuredData.o: src/StructuredData.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src

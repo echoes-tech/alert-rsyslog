@@ -15,24 +15,23 @@
 
 using namespace std;
 
-SyslogInsert::SyslogInsert(istream &input, Session *session) {
+SyslogInsert::SyslogInsert(const string &content, Session *session) {
     // Retrieve Syslog Insertion given by rsyslog
-    setContent(input);
-    detectSD();
-    sqlInsert(session);
+    setContent(content);
+
+    if(_content.compare(""))
+    {
+        detectSD();
+        sqlInsert(session);
+    }
+    else
+        Wt::log("error") << "[SyslogInsert] Content is empty";
 }
 
 SyslogInsert::SyslogInsert(const SyslogInsert& orig) {
     setContent(orig.getContent());
     setSD(orig.getSD());
     setID(orig.getID());
-}
-
-void SyslogInsert::setContent(istream& input)
-{
-    getline(input, _content);
-
-    return;
 }
 
 void SyslogInsert::setContent(string content)
@@ -52,7 +51,7 @@ void SyslogInsert::detectSD()
     if(_content.compare(""))
     {
         // TODO: renforcer la regex en détectant l'ensemble de l'insertion
-        boost::regex e(".*', '(\\[\\.+\\])', '.*");
+        boost::regex e(".*', '(\\[.+\\])', '.*");
         boost::smatch what;
 
         if (boost::regex_match(_content, what, e, boost::match_extra))
@@ -103,9 +102,10 @@ void SyslogInsert::sqlInsert(Session *session)
     try
     {
         Wt::Dbo::Transaction transaction(*session);
-        setID(session->query<int>("select currval(\"T_SYSLOG_SLO_SLO_ID_seq\")") + 1);
         
         session->execute(_content);
+        setID(session->query<int>("select currval('\"T_SYSLOG_SLO_SLO_ID_seq\"')"));
+
         transaction.commit();
     }
     catch (Wt::Dbo::Exception e)

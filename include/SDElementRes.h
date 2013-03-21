@@ -15,33 +15,26 @@
 #define	SDELEMENTRES_H
 
 #include "SDElement.h"
+#include "SDParamRes.h"
+
+typedef boost::shared_ptr<SDParamRes> SDParamResPtr;
 
 class SDElementRes : public SDElement {
     public:
         SDElementRes(const SDElement& sdElement);
         SDElementRes(const SDElementRes& orig);
         unsigned getOffset() const;
-        unsigned getIDPlugin() const;
-        unsigned getIDAsset() const;
-        unsigned getIDSource() const;
-        unsigned getIDSearch() const;
-        unsigned getValueNum() const;        
-        unsigned getLotNumber() const;
-        unsigned getLineNumber() const;
+        std::vector<SDParamResPtr> getSDParamsResPtr() const;
         virtual ~SDElementRes();
 
     private:
-        unsigned _offset, _idPlugin, _idAsset, _idSource, _idSearch, _valueNum, _lotNumber, _lineNumber;
+        unsigned _offset;
+        std::vector<SDParamResPtr> _sdParamsResPtr;
 
         void detectResKeys();
         void setOffset(unsigned _offset);
-        void setIDPlugin(unsigned _idPlugin);
-        void setIDAsset(unsigned _idAsset);
-        void setIDSource(unsigned _idSource);
-        void setIDSearch(unsigned _idSearch);
-        void setValueNum(unsigned _valueNum);
-        void setLotNumber(unsigned _lotNumber);
-        void setLineNumber(unsigned _lineNumber);
+        void addSDParamResPtr(SDParamResPtr sdParamResPtr);
+        void setSDParamsResPtr(std::vector<SDParamResPtr> sdParamsResPtr);
 };
 
 #endif	/* SDELEMENTRES_H */

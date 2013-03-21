@@ -41,6 +41,7 @@ class StructuredData {
         void setSDElementsResPtr(std::vector<SDElementResPtr> _sdElementsResPtr);
         void addSDElementResPtr(SDElementRes *sdElementResPtr);
         void setSDElementPropPtr(SDElementProp *sdElementProp);
+        void createIVAs(const long long &syslogID, Session *session);
 };
 
 #endif	/* StructuredData_H */

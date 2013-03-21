@@ -24,7 +24,7 @@
 
 class SyslogInsert {
     public:
-        SyslogInsert(std::istream &input, Session *session);
+        SyslogInsert(const std::string &content, Session *session);
         SyslogInsert(const SyslogInsert& orig);
         std::string getContent() const;
         std::string getSD() const;
@@ -35,7 +35,6 @@ class SyslogInsert {
         std::string _content, _sd;
         long long _id;
 
-        void setContent(std::istream& input);
         void setContent(std::string input);
         void detectSD();
         void setSD(std::string _sd);

@@ -27,17 +27,19 @@ class SDElement {
         SDElement(const SDElement& orig);
         std::string getContent() const;
         SDID* getSDIDPtr() const;
+        std::string getSDParamsString() const;
         std::vector<SDParamPtr> getSDParamsPtr() const;
         virtual ~SDElement();
 
     protected:
-        std::string _content;
+        std::string _content, _sdParamsString;
         SDID *_sdIDPtr;
         std::vector<SDParamPtr> _sdParamsPtr;
         
         void setContent(std::string content);
         void detectSDID();
         void setSDIDPtr(SDID *sdIDPtr);
+        void setSDParamsString(std::string sSDParams);
         void splitSDParams();
         void addSDParamPtr(SDParamPtr sdParamPtr);
         void setSDParamPtr(std::vector<SDParamPtr> sdParamsPtr);

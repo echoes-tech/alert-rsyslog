@@ -39,6 +39,8 @@ Conf::Conf()
     {
         Wt::log("error") << "[Conf] " << e.what();
     }
+
+    setSessConnectParams(_dBhost, _dBport, _dBname, _dBuser, _dBpassword);
 }
 
 Conf::Conf(const Conf& orig) {
@@ -47,6 +49,7 @@ Conf::Conf(const Conf& orig) {
     setDBname(orig.getDBName());
     setDBuser(orig.getDBUser());
     setDBpassword(orig.getDBPassword());
+    setSessConnectParams(_dBhost, _dBport, _dBname, _dBuser, _dBpassword);
 }
 
 string Conf::getDBHost() const

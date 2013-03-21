@@ -19,6 +19,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 
+#include <Wt/Utils>
 #include <Wt/WLogger>
 
 class SDParam {
@@ -30,7 +31,7 @@ class SDParam {
         std::string getValue() const;
         virtual ~SDParam();
 
-    private:
+    protected:
         std::string _content, _key, _value;
 
         void setContent(std::string content);

@@ -23,7 +23,7 @@ class SDElementProp : public SDElement
         SDElementProp(const SDElement& sdElement, const long long &syslogID, Session *session);
         SDElementProp(const SDElementProp& orig);
         std::string getToken() const;
-        bool isValidToken() const;
+        bool isValidToken(Session *session) const;
         unsigned getProbeID() const;
         unsigned getVersion() const;
         Wt::Dbo::ptr<Probe> getProbeWtDBOPtr() const;

@@ -19,8 +19,16 @@ SDElement::SDElement(const string &content) {
     setSDIDPtr(NULL);
     setContent(content);
 
-    detectSDID();
-    splitSDParams();
+    if(_content.compare(""))
+    {
+        detectSDID();
+        if(_sdParamsString.compare(""))
+        {
+            splitSDParams();
+        }
+    }
+    else
+        Wt::log("error") << "[SDElement] Content is empty";
 }
 
 SDElement::SDElement(const SDElement& orig) {
@@ -45,34 +53,35 @@ void SDElement::detectSDID()
 {
     if(_content.compare(""))
     {
-        boost::regex e("^(\\w+)@(\\d+)");
+        boost::regex e("^(\\w+)@(\\d+) (.*)");
         boost::smatch what;
 
         if (boost::regex_match(_content, what, e, boost::match_extra))
         {
-            if (what.size() == 3) {
+            if (what.size() == 4) {
                 try
                 {
                     setSDIDPtr( new SDID(what[1], boost::lexical_cast<unsigned>(what[2])) );
                 }
                 catch (boost::bad_lexical_cast &)
                 {
-                    std::cout << "** PEN is not an unsigned on SD-Element Prop **\n";
+                    Wt::log("error") << "[SDElement] PEN is not an unsigned on SD-Element Prop";
                 }
+                setSDParamsString(what[3]);
             }
             else
             {
-                std::cout << "** Bad number of elements on SD-Element Prop **\n";
+                Wt::log("error") << "[SDElement] Bad number of elements on SD-Element Prop";
             }
         }
         else
         {
-            std::cout << "** No Match found **\n";
+            Wt::log("error") << "[SDElement] No Match found";
         }
     }
     else
     {
-        std::cout << "** No SD-Element Prop found **\n";
+        Wt::log("error") << "[SDElement] No SD-Element Prop found";
     }
 
     return;
@@ -90,11 +99,21 @@ SDID* SDElement::getSDIDPtr() const
     return _sdIDPtr;
 }
 
+void SDElement::setSDParamsString(std::string sdParamsString)
+{
+    _sdParamsString = sdParamsString;
+    return;
+}
+
+string SDElement::getSDParamsString() const
+{
+    return _sdParamsString;
+}
+
 void SDElement::splitSDParams()
 {
-    string sdParamsTmp(_content);
+    string sdParamsTmp(_sdParamsString);
     vector<string> sSDParams;
-    unsigned i = 0;
     SDParamPtr sdParamPtr;
     
     //offset=2 4-1-3-4-1-1-1="U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE" 4-1-3-4-2-1-1="U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE"
@@ -104,7 +123,7 @@ void SDElement::splitSDParams()
     //4-1-3-4-1-1-1="U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE"
     //4-1-3-4-2-1-1="U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE"
 
-    for (i = 0; i < sSDParams.size(); ++i)
+    for (unsigned i(0); i < sSDParams.size(); ++i)
     {
         sdParamPtr.reset( new SDParam(sSDParams[i]) );
 
@@ -134,9 +153,5 @@ vector<SDParamPtr> SDElement::getSDParamsPtr() const
 }
 
 SDElement::~SDElement() {
-    if (_sdIDPtr != NULL)
-    {
-        delete(_sdIDPtr);
-    }
 }
 
