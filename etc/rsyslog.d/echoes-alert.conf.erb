@@ -2,11 +2,11 @@
 ### Changes are preserved
 
 # Define PostgreSQL template
-$template pgsqlinsert,"INSERT INTO \"T_SYSLOG_SLO\" (version, \"SLO_APP_NAME\", \"SLO_HOSTNAME\", \"SLO_SD\", \"SLO_RCPT_DATE\", \"SLO_SENT_DATE\", \"SLO_PRI\", \"SLO_MSG_ID\", \"SLO_PROC_ID\", \"SLO_STATE\") values (0, '%app-name%', '%hostname%', '%structured-data%', '%timegenerated:::date-pgsql%', '%timereported:::date-pgsql%', '%PRI%', '%msgid%', %procid%, 0)",SQL
+$template pgsqlinsert,"INSERT INTO \"T_SYSLOG_SLO\" (version, \"SLO_APP_NAME\", \"SLO_HOSTNAME\", \"SLO_SD\", \"SLO_RCPT_DATE\", \"SLO_SENT_DATE\", \"SLO_PRI\", \"SLO_MSG_ID\", \"SLO_PROC_ID\", \"SLO_STATE\") values (0, '%app-name%', '%hostname%', '%structured-data%', '%timegenerated:::date-pgsql%', '%timereported:::date-pgsql%', '%PRI%', '%msgid%', %procid%, 0);",SQL
 
 # Load Modules
 $ModLoad imtcp
-$ModLoad ompgsql
+$ModLoad omprog
 
 # Make gtls driver the default
 $DefaultNetstreamDriver gtls
@@ -17,7 +17,8 @@ $DefaultNetstreamDriverCertFile /etc/ssl/echoes-tech.com/cert-echoes-tech.com.cr
 $DefaultNetstreamDriverKeyFile /etc/ssl/echoes-tech.com/echoes-tech.com.key
 
 $RuleSet echoes-alert
-*.=info		:ompgsql:<%= hostname %>,<%= dbname %>,<%= user %>,<%= password %>;pgsqlinsert
+$ActionOMProgBinary /opt/echoes-alert/rsyslog/ea-rsyslog
+*.=info         :omprog:;pgsqlinsert
 
 $InputTCPServerBindRuleset echoes-alert
 $InputTCPServerStreamDriverMode 1 # run driver in TLS-only mode
