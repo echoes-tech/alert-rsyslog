@@ -173,6 +173,12 @@
           </linkerAddLib>
           <stripSymbols>true</stripSymbols>
           <commandlineTool>g++-4.4</commandlineTool>
+          <linkerLibItems>
+            <linkerLibLibItem>dbo</linkerLibLibItem>
+            <linkerLibLibItem>wt</linkerLibLibItem>
+            <linkerLibLibItem>boost_regex</linkerLibLibItem>
+            <linkerLibLibItem>boost_system</linkerLibLibItem>
+          </linkerLibItems>
         </linkerTool>
       </compileType>
       <item path="etc/rsyslog.conf" ex="false" tool="3" flavor2="0">
