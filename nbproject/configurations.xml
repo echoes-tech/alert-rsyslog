@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configurationDescriptor version="88">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <logicalFolder name="conf" displayName="conf" projectFiles="true">
+      <itemPath>conf/ea-parser.conf</itemPath>
+      <itemPath>conf/ea-parser.conf.erb</itemPath>
+    </logicalFolder>
     <logicalFolder name="etc" displayName="etc" projectFiles="true">
       <logicalFolder name="rsyslog.d" displayName="rsyslog.d" projectFiles="true">
-        <itemPath>etc/rsyslog.d/ea-parser.conf</itemPath>
-        <itemPath>etc/rsyslog.d/ea-parser.conf.erb</itemPath>
         <itemPath>etc/rsyslog.d/echoes-alert.conf.erb</itemPath>
         <itemPath>etc/rsyslog.d/pgsql.conf</itemPath>
       </logicalFolder>
@@ -88,11 +90,11 @@
           </linkerLibItems>
         </linkerTool>
       </compileType>
+      <item path="conf/ea-parser.conf" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="conf/ea-parser.conf.erb" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="etc/rsyslog.conf" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="etc/rsyslog.d/ea-parser.conf" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="etc/rsyslog.d/ea-parser.conf.erb" ex="false" tool="3" flavor2="0">
       </item>
       <item path="etc/rsyslog.d/echoes-alert.conf.erb"
             ex="false"
@@ -158,7 +160,7 @@
             <pElem>../dbo/include</pElem>
             <pElem>/var/lib/jenkins/jobs/ea-dbo-${target}/workspace/include</pElem>
           </incDir>
-          <commandLine>-std=c++0x</commandLine>
+          <commandLine>-std=c++0x -DNDEBUG</commandLine>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>
@@ -181,11 +183,11 @@
           </linkerLibItems>
         </linkerTool>
       </compileType>
+      <item path="conf/ea-parser.conf" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="conf/ea-parser.conf.erb" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="etc/rsyslog.conf" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="etc/rsyslog.d/ea-parser.conf" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="etc/rsyslog.d/ea-parser.conf.erb" ex="false" tool="3" flavor2="0">
       </item>
       <item path="etc/rsyslog.d/echoes-alert.conf.erb"
             ex="false"
