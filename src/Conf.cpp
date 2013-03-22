@@ -64,7 +64,7 @@ void Conf::setDBport(unsigned dBport)
     return;
 }
 
-void Conf::setDBhost(std::string dBhost)
+void Conf::setDBhost(string dBhost)
 {
     _dBhost = dBhost;
 
@@ -76,7 +76,7 @@ unsigned Conf::getDBPort() const
     return _dBport;
 }
 
-void Conf::setDBname(std::string dBname)
+void Conf::setDBname(string dBname)
 {
     _dBname = dBname;
 
@@ -88,7 +88,7 @@ string Conf::getDBName() const
     return _dBname;
 }
 
-void Conf::setDBuser(std::string dBuser)
+void Conf::setDBuser(string dBuser)
 {
     _dBuser = dBuser;
 
@@ -100,7 +100,7 @@ string Conf::getDBUser() const
     return _dBuser;
 }
 
-void Conf::setDBpassword(std::string dBpassword)
+void Conf::setDBpassword(string dBpassword)
 {
     _dBpassword = dBpassword;
 

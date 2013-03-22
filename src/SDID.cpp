@@ -25,7 +25,7 @@ SDID::SDID(const SDID& orig) {
     setPrivateEntrepriseNumber(orig.getPrivateEntrepriseNumber());
 }
 
-void SDID::setName(const string name)
+void SDID::setName(string name)
 {
     _name = name;
     return;
@@ -36,7 +36,7 @@ string SDID::getName() const
     return _name;
 }
 
-void SDID::setPrivateEntrepriseNumber(const unsigned privateEntrepriseNumber)
+void SDID::setPrivateEntrepriseNumber(unsigned privateEntrepriseNumber)
 {
     _privateEntrepriseNumber = privateEntrepriseNumber;
     return;

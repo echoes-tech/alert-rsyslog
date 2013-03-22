@@ -22,6 +22,7 @@ SDElementRes::SDElementRes(const SDElement& sdElement) : SDElement(sdElement) {
 
 SDElementRes::SDElementRes(const SDElementRes& orig) : SDElement(orig)  {
     setOffset(orig.getOffset());
+    setSDParamsString(orig.getSDParamsString());
 }
 
 void SDElementRes::detectResKeys()

@@ -26,6 +26,7 @@ SDElementProp::SDElementProp(const SDElementProp& orig) : SDElement(orig)
     setProbeID(orig.getProbeID());
     setProbeWtDBOPtr(orig.getProbeWtDBOPtr());
     setToken(orig.getToken());
+    setVersion(orig.getVersion());
 }
 
 void SDElementProp::detectPropKeys(Session *session)

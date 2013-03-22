@@ -28,8 +28,8 @@ class SDID {
         std::string _name;
         unsigned _privateEntrepriseNumber;
 
-        void setName(const std::string name);
-        void setPrivateEntrepriseNumber(const unsigned privateEntrepriseNumber);
+        void setName(std::string name);
+        void setPrivateEntrepriseNumber(unsigned privateEntrepriseNumber);
 };
 
 #endif	/* SDID_H */
