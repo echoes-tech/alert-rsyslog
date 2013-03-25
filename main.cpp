@@ -11,6 +11,7 @@
  * 
  */
 
+#include "Logger.h"
 #include "Conf.h"
 #include "StructuredData.h"
 #include "SyslogInsert.h"
@@ -29,9 +30,9 @@ int main(int argc, char** argv) {
     Conf *conf = NULL;
     Session *session = NULL;
     string input = "";
-
-    Wt::log("info") << "[origin enterpriseId=\"40311\" software=\"ECHOES Alert - Rsyslog Parser\" swVersion=\"0.1.0.beta3\"] (re)start";
     
+    logger.entry("info") << "[origin enterpriseId=\"40311\" software=\"ECHOES Alert - Rsyslog Parser\" swVersion=\"0.1.0.beta3\"] (re)start";
+
     // Loading conf
     conf = new Conf();
     if (conf->getDBPort() != 0)
@@ -64,8 +65,8 @@ int main(int argc, char** argv) {
 
     delete conf;
 
-    Wt::log("info") << "[origin enterpriseId=\"40311\" software=\"ECHOES Alert - Rsyslog Parser\" swVersion=\"0.1.0.beta3\"] stop";
-    
+    logger.entry("info") << "[origin enterpriseId=\"40311\" software=\"ECHOES Alert - Rsyslog Parser\" swVersion=\"0.1.0.beta3\"] stop";
+
     return res;
 }
 

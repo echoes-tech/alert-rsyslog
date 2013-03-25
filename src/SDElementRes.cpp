@@ -39,7 +39,7 @@ void SDElementRes::detectResKeys()
             }
             catch (boost::bad_lexical_cast &)
             {
-               Wt::log("error") << "[SDElementRes] Offset is not an unsigned on SD-Element Res";
+               logger.entry("error") << "[SDElementRes] Offset is not an unsigned on SD-Element Res";
             }
         }
         else if (!boost::starts_with(_sdParamsPtr[i]->getKey(), "res"))

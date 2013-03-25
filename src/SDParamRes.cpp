@@ -32,7 +32,7 @@ SDParamRes::SDParamRes(const SDParam& sdParam) : SDParam(sdParam)
     }
     catch (boost::bad_lexical_cast &)
     {
-        Wt::log("error") << "[SDParamRes] IDs is not an unsigned on SD-Element Res";
+        logger.entry("error") << "[SDParamRes] IDs is not an unsigned on SD-Element Res";
     }
 }
 

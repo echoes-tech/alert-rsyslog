@@ -25,7 +25,7 @@ SyslogInsert::SyslogInsert(const string &content, Session *session) {
         sqlInsert(session);
     }
     else
-        Wt::log("error") << "[SyslogInsert] Content is empty";
+        logger.entry("error") << "[SyslogInsert] Content is empty";
 }
 
 SyslogInsert::SyslogInsert(const SyslogInsert& orig) {
@@ -61,17 +61,17 @@ void SyslogInsert::detectSD()
             }
             else
             {
-                Wt::log("error") << "[SyslogInsert] Bad number of Structured Data";
+                logger.entry("error") << "[SyslogInsert] Bad number of Structured Data";
             }
         }
         else
         {
-            Wt::log("error") << "[SyslogInsert] No Structured Data found";
+            logger.entry("error") << "[SyslogInsert] No Structured Data found";
         }
     }
     else
     {
-        Wt::log("error") << "[SyslogInsert] No Structured Data is set";
+        logger.entry("error") << "[SyslogInsert] No Structured Data is set";
     }
 
     return;
@@ -110,7 +110,7 @@ void SyslogInsert::sqlInsert(Session *session)
     }
     catch (Wt::Dbo::Exception e)
     {
-        Wt::log("error") << "[SyslogInsert] " << e.what();
+        logger.entry("error") << "[SyslogInsert] " << e.what();
     }
     
     return;

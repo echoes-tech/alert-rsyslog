@@ -37,6 +37,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/src/Conf.o \
+	${OBJECTDIR}/src/Logger.o \
 	${OBJECTDIR}/src/SDElement.o \
 	${OBJECTDIR}/src/SDElementProp.o \
 	${OBJECTDIR}/src/SDElementRes.o \
@@ -80,6 +81,11 @@ ${OBJECTDIR}/src/Conf.o: src/Conf.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
 	$(COMPILE.cc) -g -Wall -Iinclude -I../dbo/include -std=c++11 -pedantic -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/Conf.o src/Conf.cpp
+
+${OBJECTDIR}/src/Logger.o: src/Logger.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} $@.d
+	$(COMPILE.cc) -g -Wall -Iinclude -I../dbo/include -std=c++11 -pedantic -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/Logger.o src/Logger.cpp
 
 ${OBJECTDIR}/src/SDElement.o: src/SDElement.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src

@@ -14,7 +14,7 @@
 #ifndef SDID_H
 #define	SDID_H
 
-#include <Wt/WLogger>
+#include "Logger.h"
 
 class SDID {
     public:

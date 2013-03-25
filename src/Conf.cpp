@@ -41,7 +41,7 @@ Conf::Conf()
     }
     catch (boost::property_tree::ini_parser_error e)
     {
-        Wt::log("error") << "[Conf] " << e.what();
+        logger.entry("error") << "[Conf] " << e.what();
     }
 
     setSessConnectParams(_dBhost, _dBport, _dBname, _dBuser, _dBpassword);
@@ -135,7 +135,7 @@ void Conf::setSessConnectParams
     }
     catch (boost::bad_lexical_cast &)
     {
-         Wt::log("error") << "[Conf] sdPort is not an unsigned";
+         logger.entry("error") << "[Conf] sdPort is not an unsigned";
     }
 
     return;

@@ -18,9 +18,9 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
 
-#include <Wt/WLogger>
-
 #include <tools/SessionPool.h>
+
+#include "Logger.h"
 
 class SyslogInsert {
     public:

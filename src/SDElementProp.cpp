@@ -41,7 +41,7 @@ void SDElementProp::detectPropKeys(Session *session)
             }
             catch (boost::bad_lexical_cast &)
             {
-                Wt::log("error") << "[SDElementProp] Version is not an unsigned on SD-Element Prop";
+                logger.entry("error") << "[SDElementProp] Version is not an unsigned on SD-Element Prop";
             }
         }
         else if (boost::equals(_sdParamsPtr[i]->getKey(), "probe"))
@@ -53,7 +53,7 @@ void SDElementProp::detectPropKeys(Session *session)
             }
             catch (boost::bad_lexical_cast &)
             {
-                Wt::log("error") << "[SDElement] Probe ID is not an unsigned on SD-Element Prop";
+                logger.entry("error") << "[SDElement] Probe ID is not an unsigned on SD-Element Prop";
             }
         }
         else if (boost::equals(_sdParamsPtr[i]->getKey(), "token"))
@@ -87,17 +87,17 @@ bool SDElementProp::isValidToken(Session *session) const
         {   
             Wt::Dbo::Transaction transaction(*session);
             if (_token.compare(_probeWtDBOPtr->organization->token.toUTF8()))
-                Wt::log("error") << " [SDElementProp] Token not matching organization token.";
+                logger.entry("error") << " [SDElementProp] Token not matching organization token.";
             else
                 res = true;
         }
         catch (Wt::Dbo::Exception e)
         {
-            Wt::log("error") << " [SDElementProp] " << e.what() ;
+            logger.entry("error") << " [SDElementProp] " << e.what() ;
         }
     }
     else
-        Wt::log("error") << " [SDElementProp] Probe doesn't exist.";
+        logger.entry("error") << " [SDElementProp] Probe doesn't exist.";
 
     return res;
 }
@@ -137,7 +137,7 @@ void SDElementProp::findProbeWtDBOPtr(Session *session, unsigned probeID)
     catch (Wt::Dbo::Exception e)
     {
         setProbeWtDBOPtr(*(new Wt::Dbo::ptr<Probe>()));
-        Wt::log("error") << " [SDElementProp] " << e.what();
+        logger.entry("error") << " [SDElementProp] " << e.what();
     }
 
     return;
@@ -172,7 +172,7 @@ void SDElementProp::updateSyslog(long long syslogID, Session *session)
     }
     catch (Wt::Dbo::Exception e)
     {
-        Wt::log("error") << " [SDElementProp] " << e.what();           
+        logger.entry("error") << " [SDElementProp] " << e.what();           
     }
 
 }

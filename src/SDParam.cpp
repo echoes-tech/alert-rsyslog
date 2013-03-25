@@ -23,7 +23,7 @@ SDParam::SDParam(const string &content) {
     if(_content.compare(""))
         splitKeyValue();
     else
-        Wt::log("error") << "[SDParam] Content is empty";
+        logger.entry("error") << "[SDParam] Content is empty";
 }
 
 SDParam::SDParam(const SDParam& orig) {

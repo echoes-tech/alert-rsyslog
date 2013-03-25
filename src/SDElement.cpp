@@ -28,7 +28,7 @@ SDElement::SDElement(const string &content) {
         }
     }
     else
-        Wt::log("error") << "[SDElement] Content is empty";
+        logger.entry("error") << "[SDElement] Content is empty";
 }
 
 SDElement::SDElement(const SDElement& orig) {
@@ -65,23 +65,23 @@ void SDElement::detectSDID()
                 }
                 catch (boost::bad_lexical_cast &)
                 {
-                    Wt::log("error") << "[SDElement] PEN is not an unsigned on SD-Element Prop";
+                    logger.entry("error") << "[SDElement] PEN is not an unsigned on SD-Element Prop";
                 }
                 setSDParamsString(what[3]);
             }
             else
             {
-                Wt::log("error") << "[SDElement] Bad number of elements on SD-Element Prop";
+                logger.entry("error") << "[SDElement] Bad number of elements on SD-Element Prop";
             }
         }
         else
         {
-            Wt::log("error") << "[SDElement] No Match found";
+            logger.entry("error") << "[SDElement] No Match found";
         }
     }
     else
     {
-        Wt::log("error") << "[SDElement] No SD-Element Prop found";
+        logger.entry("error") << "[SDElement] No SD-Element Prop found";
     }
 
     return;

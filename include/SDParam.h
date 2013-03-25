@@ -20,7 +20,8 @@
 #include <boost/ptr_container/ptr_vector.hpp>
 
 #include <Wt/Utils>
-#include <Wt/WLogger>
+
+#include "Logger.h"
 
 class SDParam {
     public:
