@@ -43,9 +43,7 @@ int main(int argc, char** argv) {
         // Setting the session
         session = new Session(conf->getSessConnectParams());
 
-        getline(cin, input);
-
-        while (input.compare("EOF"))
+        while (!getline(cin, input).eof())
         {
             // Processing the Syslog Insertion and detection Structured Data
             syslogInsert = new SyslogInsert(input, session);
@@ -54,8 +52,6 @@ int main(int argc, char** argv) {
 
             delete sd;
             delete syslogInsert;
-
-            getline(cin, input);
         }
 
         delete session;
