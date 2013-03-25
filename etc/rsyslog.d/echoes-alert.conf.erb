@@ -18,7 +18,7 @@ $RuleSet echoes-alert
 $template pgsqlinsert,"INSERT INTO \"T_SYSLOG_SLO\" (version, \"SLO_APP_NAME\", \"SLO_HOSTNAME\", \"SLO_SD\", \"SLO_RCPT_DATE\", \"SLO_SENT_DATE\", \"SLO_PRI\", \"SLO_MSG_ID\", \"SLO_PROC_ID\", \"SLO_STATE\") values (0, '%app-name%', '%hostname%', '%structured-data%', '%timegenerated:::date-pgsql%', '%timereported:::date-pgsql%', '%PRI%', '%msgid%', %procid%, 0);\n"
 
 $ModLoad omprog
-$ActionOMProgBinary /opt/echoes-alert/rsyslog/ea-rsyslog
+$ActionOMProgBinary /etc/rsyslog.d/bin/ea-rsyslog
 *.=info         :omprog:;pgsqlinsert
 
 $InputTCPServerBindRuleset echoes-alert
