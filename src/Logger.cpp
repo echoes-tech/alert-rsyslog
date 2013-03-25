@@ -22,7 +22,7 @@ Logger::Logger() : Wt::WLogger()
     addField("datetime", false);
     addField("message", false);
 #ifdef NDEBUG
-   setFile("/var/log/echoes-alert/parser.log")
+   setFile("/var/log/echoes-alert/parser.log");
 #endif
 }
 
