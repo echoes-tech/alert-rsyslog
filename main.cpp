@@ -26,6 +26,21 @@ boost::mutex SessionPool::mutex;
  * 
  */
 int main(int argc, char** argv) {
+    
+    /* Daemonization */
+    #ifdef NDEBUG
+        if(chdir("/") != 0)
+        {
+            std::cerr << "failed to reach root \n";
+            return EXIT_FAILURE;
+        }
+        if(fork() != 0)
+            exit(EXIT_SUCCESS);
+        setsid();
+        if(fork() != 0)
+            exit(EXIT_SUCCESS);
+    #endif
+
     int res = EXIT_FAILURE;
     Conf *conf = NULL;
     Session *session = NULL;
