@@ -131,7 +131,7 @@ void StructuredData::createIVAs(const long long &syslogID, Session *session)
 
         if (!sloPtr)
         {
-            logger.entry("error") << " [StructuredData] " << "Syslog with id : " << syslogID << " doesn't exist." ;
+            logger.entry("error") << "[StructuredData] Syslog with id : " << syslogID << " doesn't exist." ;
             transaction.commit();
         }
         sloPtr.modify()->state = 1;
@@ -162,7 +162,7 @@ void StructuredData::createIVAs(const long long &syslogID, Session *session)
 
                 if (!astPtr)
                 {
-                    logger.entry("error") << " [StructuredData] " << "Asset with id : " << idAsset << " doesn't exist." ;
+                    logger.entry("error") << "[StructuredData] Asset with id : " << idAsset << " doesn't exist." ;
                     isPartial = true;
                     continue;
                 }
@@ -177,7 +177,7 @@ void StructuredData::createIVAs(const long long &syslogID, Session *session)
 
                 if (!seuPtr)
                 {
-                    logger.entry("error") << " [StructuredData] " << "No search unit retrieved for values :"
+                    logger.entry("error") << "[StructuredData] No search unit retrieved for values :" << value
                                                              << " seaId : " << idSearch 
                                                              << " srcId : " << idSource 
                                                              << " plgId : " << idPlugin
@@ -186,7 +186,7 @@ void StructuredData::createIVAs(const long long &syslogID, Session *session)
                     continue;
                 }
 
-                logger.entry("debug") << " [StructuredData] " << "looking for INF";
+                logger.entry("debug") << "[StructuredData] looking for INF";
                 Wt::Dbo::ptr<Information2> infPtr = session->find<Information2>()
                         .where("\"PLG_ID_PLG_ID\" = ?").bind(idPlugin)
                         .where("\"SRC_ID\" = ?").bind(idSource)
@@ -196,31 +196,52 @@ void StructuredData::createIVAs(const long long &syslogID, Session *session)
                         .limit(1);
 
                 // we check whether we have to calculate something about the information
-                logger.entry("debug") << " [StructuredData] " << "Calculate this info ? : "<< infPtr.get();
+                logger.entry("debug") << "[StructuredData] Calculate this info ? : "<< infPtr.get();
                 if (!infPtr)
                 {
-                    logger.entry("error") << " [StructuredData] " << "No infPtr" ;
+                    logger.entry("error") << "[StructuredData] No infPtr" ;
                     isPartial = true;
                     continue;
                 }
 
+                if(infPtr->pk.unit->unitType.id() == Enums::NUMBER)
+                {
+                    try
+                    {
+                        boost::lexical_cast<long double>(value);
+                    }
+                    catch(boost::bad_lexical_cast &)
+                    {
+                        logger.entry("error")
+                                << "[StructuredData] Values :" << value
+                                << " seaId : " << idSearch
+                                << " srcId : " << idSource
+                                << " plgId : " << idPlugin
+                                << " valueNum : " << valueNum
+                                << " astId: " << idAsset
+                                << " must be a number";
+                        isPartial = true;
+                        continue;
+                    }
+                }
+                
                 if (infPtr->calculate)
                 {
                     if (!infPtr->calculate.get().empty())
                     {
                         calculate = infPtr->calculate.get();
-                        logger.entry("debug") << " [StructuredData] " << "calculate found : " << calculate ;
+                        logger.entry("debug") << "[StructuredData] calculate found : " << calculate ;
                     }
                     else
                     {
-                        logger.entry("error") << " [StructuredData] " << "No calculation found, should have" ;
+                        logger.entry("error") << "[StructuredData] No calculation found, should have" ;
                         isPartial = true;
                         continue;
                     }
                 }
                 else
                 {
-                    logger.entry("debug") << " [StructuredData] " << "No calculation required" ;
+                    logger.entry("debug") << "[StructuredData] No calculation required" ;
                 }
 
                 //get sent date of the the associated syslog
@@ -253,7 +274,7 @@ void StructuredData::createIVAs(const long long &syslogID, Session *session)
     }
     catch (Wt::Dbo::Exception e)
     {
-        logger.entry("error") << " [StructuredData] " << e.what();
+        logger.entry("error") << "[StructuredData] " << e.what();
     }
 
     return;

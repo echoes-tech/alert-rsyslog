@@ -14,6 +14,7 @@
 #ifndef StructuredData_H
 #define	StructuredData_H
 
+#include <tools/Enums.h>
 #include <tools/SessionPool.h>
 
 #include "SDElement.h"
