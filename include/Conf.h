@@ -24,17 +24,20 @@ class Conf {
     public:
         Conf();
         Conf(const Conf& orig);
+        virtual ~Conf();
+
         std::string getDBHost() const;
         unsigned getDBPort() const;
         std::string getDBName() const;
         std::string getDBUser() const;
         std::string getDBPassword() const;
         std::string getSessConnectParams() const;
-        virtual ~Conf();
+        unsigned short getCriticity() const;
 
     protected:
         std::string _dBhost, _dBname, _dBuser, _dBpassword, _sessConnectParams;
         unsigned _dBport;
+        unsigned short _criticity;
 
         void setDBport(unsigned _dBport);
         void setDBpassword(std::string dBpassword);
@@ -49,6 +52,7 @@ class Conf {
                 std::string dBuser,
                 std::string dBpassword
         );
+        void setCriticity(unsigned short criticity);
 };
 
 #endif	/* CONF_H */

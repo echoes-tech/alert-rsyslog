@@ -19,11 +19,21 @@
 class Logger : public Wt::WLogger {
     public:
         Logger();
-        Wt::WLogEntry entry(const std::string& type) const;
         virtual ~Logger();
 
-    private:
+        Wt::WLogEntry entry(const std::string& type) const;
+        void setType(unsigned short severity);
 
+    private:
+        enum EType
+        {
+            DEBUG = 1,
+            INFO = 2,
+            WARNING = 3,
+            SECURE = 4,
+            ERROR = 5,
+            FATAL = 6
+        };
 };
 
 extern Logger logger;

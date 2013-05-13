@@ -196,7 +196,7 @@ void StructuredData::createIVAs(const long long &syslogID, Session *session)
                         .limit(1);
 
                 // we check whether we have to calculate something about the information
-                logger.entry("debug") << "[StructuredData] Calculate this info ? : "<< infPtr.get();
+                logger.entry("debug") << "[StructuredData] Calculate this INF ?";
                 if (!infPtr)
                 {
                     logger.entry("error") << "[StructuredData] No infPtr" ;
@@ -230,7 +230,7 @@ void StructuredData::createIVAs(const long long &syslogID, Session *session)
                     if (!infPtr->calculate.get().empty())
                     {
                         calculate = infPtr->calculate.get();
-                        logger.entry("debug") << "[StructuredData] calculate found : " << calculate ;
+                        logger.entry("debug") << "[StructuredData] Calculation found : " << calculate ;
                     }
                     else
                     {
@@ -266,9 +266,15 @@ void StructuredData::createIVAs(const long long &syslogID, Session *session)
         }
 
         if (isPartial)
+        {
+            logger.entry("info") << "[StructuredData] SLO " << syslogID << " partially converted into IVA";
             sloPtr.modify()->state = 3;
+        }
         else
+        {
+            logger.entry("debug") << "[StructuredData] SLO " << syslogID << " totally converted into IVA";
             sloPtr.modify()->state = 2;
+        }
         
         transaction.commit();
     }

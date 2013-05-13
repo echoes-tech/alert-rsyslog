@@ -35,6 +35,7 @@ int main(int argc, char** argv) {
 
     // Loading conf
     conf = new Conf();
+    logger.setType(conf->getCriticity());
     if (conf->getDBPort() != 0)
     {
         SyslogInsert *syslogInsert = NULL;
@@ -45,13 +46,18 @@ int main(int argc, char** argv) {
 
         while (!getline(cin, input).eof())
         {
-            // Processing the Syslog Insertion and detection Structured Data
-            syslogInsert = new SyslogInsert(input, session);
+            if(input.compare(""))
+            {
+                // Processing the Syslog Insertion and detection Structured Data
+                syslogInsert = new SyslogInsert(input, session);
 
-            sd = new StructuredData(syslogInsert->getSD(), syslogInsert->getID(), session);
+                sd = new StructuredData(syslogInsert->getSD(), syslogInsert->getID(), session);
 
-            delete sd;
-            delete syslogInsert;
+                delete sd;
+                delete syslogInsert;
+            }
+            else
+                logger.entry("warning") << "[Main] Input is empty";
         }
 
         delete session;

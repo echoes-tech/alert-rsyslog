@@ -37,7 +37,7 @@ Conf::Conf()
         setDBname(pt.get<string>("database.name"));
         setDBuser(pt.get<string>("database.user"));
         setDBpassword(pt.get<string>("database.password"));
-        
+        setCriticity(pt.get<unsigned short>("log.criticity"));
     }
     catch (boost::property_tree::ini_parser_error e)
     {
@@ -47,13 +47,19 @@ Conf::Conf()
     setSessConnectParams(_dBhost, _dBport, _dBname, _dBuser, _dBpassword);
 }
 
-Conf::Conf(const Conf& orig) {
+Conf::Conf(const Conf& orig)
+{
     setDBhost(orig.getDBHost());
     setDBport(orig.getDBPort());
     setDBname(orig.getDBName());
     setDBuser(orig.getDBUser());
     setDBpassword(orig.getDBPassword());
     setSessConnectParams(_dBhost, _dBport, _dBname, _dBuser, _dBpassword);
+    setCriticity(orig.getCriticity());
+}
+
+Conf::~Conf()
+{
 }
 
 string Conf::getDBHost() const
@@ -146,6 +152,14 @@ string Conf::getSessConnectParams() const
     return _sessConnectParams;
 }
 
-Conf::~Conf() {
+void Conf::setCriticity(unsigned short criticity)
+{
+    _criticity = criticity;
+    return;
+}
+
+unsigned short Conf::getCriticity() const
+{
+    return _criticity;
 }
 
