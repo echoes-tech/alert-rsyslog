@@ -15,7 +15,7 @@
 
 using namespace std;
 
-SDElementProp::SDElementProp(const SDElement& sdElement, const long long &syslogID, Session *session) : SDElement(sdElement)
+SDElementProp::SDElementProp(const SDElement& sdElement, const long long &syslogID, Session &session) : SDElement(sdElement)
 {
     detectPropKeys(session);
     updateSyslog(syslogID, session);
@@ -29,7 +29,7 @@ SDElementProp::SDElementProp(const SDElementProp& orig) : SDElement(orig)
     setVersion(orig.getVersion());
 }
 
-void SDElementProp::detectPropKeys(Session *session)
+void SDElementProp::detectPropKeys(Session &session)
 {
     for (unsigned i(0); i < _sdParamsPtr.size(); ++i)
     {
@@ -77,7 +77,7 @@ string SDElementProp::getToken() const
     return _token;
 }
 
-bool SDElementProp::isValidToken(Session *session) const
+bool SDElementProp::isValidToken(Session &session) const
 {
     bool res = false;
 
@@ -85,7 +85,7 @@ bool SDElementProp::isValidToken(Session *session) const
     {
         try
         {   
-            Wt::Dbo::Transaction transaction(*session);
+            Wt::Dbo::Transaction transaction(session);
             if (_token.compare(_probeWtDBOPtr->organization->token.toUTF8()))
                 logger.entry("error") << " [SDElementProp] Token not matching organization token.";
             else
@@ -126,12 +126,12 @@ unsigned SDElementProp::getProbeID() const
     return _probeID;
 }
 
-void SDElementProp::findProbeWtDBOPtr(Session *session, unsigned probeID)
+void SDElementProp::findProbeWtDBOPtr(Session &session, unsigned probeID)
 {
     try
     {
-        Wt::Dbo::Transaction transaction(*session);
-        setProbeWtDBOPtr(session->find<Probe>().where("\"PRB_ID\" = ?").bind(boost::lexical_cast<string>(probeID)).limit(1));
+        Wt::Dbo::Transaction transaction(session);
+        setProbeWtDBOPtr(session.find<Probe>().where("\"PRB_ID\" = ?").bind(boost::lexical_cast<string>(probeID)).limit(1));
         transaction.commit();
     }
     catch (Wt::Dbo::Exception e)
@@ -153,12 +153,12 @@ Wt::Dbo::ptr<Probe> SDElementProp::getProbeWtDBOPtr() const
     return _probeWtDBOPtr;
 }
 
-void SDElementProp::updateSyslog(long long syslogID, Session *session)
+void SDElementProp::updateSyslog(long long syslogID, Session &session)
 {
     try 
     {
-        Wt::Dbo::Transaction transaction(*session);
-        Wt::Dbo::ptr<Syslog> syslogPtr = session->find<Syslog>().where("\"SLO_ID\" = ?").bind(boost::lexical_cast<string>(syslogID)).limit(1);
+        Wt::Dbo::Transaction transaction(session);
+        Wt::Dbo::ptr<Syslog> syslogPtr = session.find<Syslog>().where("\"SLO_ID\" = ?").bind(boost::lexical_cast<string>(syslogID)).limit(1);
         
         if(isValidToken(session))
         {

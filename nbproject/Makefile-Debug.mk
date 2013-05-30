@@ -62,7 +62,7 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=-L../dbo/dist/Debug_SharedObject/GNU-Linux-x86 -ldbo -lwt -lboost_regex -lboost_system
+LDLIBSOPTIONS=-L../dbo/dist/Debug_SharedObject/GNU-Linux-x86 -ldbo -lwtdbo -lwt -lboost_regex -lboost_system -lstdc++
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}

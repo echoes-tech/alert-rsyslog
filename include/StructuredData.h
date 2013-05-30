@@ -25,12 +25,13 @@ typedef boost::shared_ptr<SDElementRes> SDElementResPtr;
 
 class StructuredData {
     public:
-        StructuredData(const std::string &content, const long long &syslogID, Session *session);
+        StructuredData(const std::string &content, const long long &syslogID, Session &session);
         StructuredData(const StructuredData& orig);
+        virtual ~StructuredData();
+
         std::string getContent() const;
         std::vector<SDElementResPtr> getSDElementsResPtr() const;
         SDElementProp* getSDElementPropPtr() const;
-        virtual ~StructuredData();
 
     private:
         std::string _content;
@@ -38,11 +39,11 @@ class StructuredData {
         std::vector<SDElementResPtr> _sdElementsResPtr;
 
         void setContent(std::string content);
-        void splitSDElements(const long long &syslogID, Session *session);
+        void splitSDElements(const long long &syslogID, Session &session);
         void setSDElementsResPtr(std::vector<SDElementResPtr> _sdElementsResPtr);
         void addSDElementResPtr(SDElementRes *sdElementResPtr);
         void setSDElementPropPtr(SDElementProp *sdElementProp);
-        void createIVAs(const long long &syslogID, Session *session);
+        void createIVAs(const long long &syslogID, Session &session);
 };
 
 #endif	/* StructuredData_H */

@@ -24,12 +24,13 @@
 
 class SyslogInsert {
     public:
-        SyslogInsert(const std::string &content, Session *session);
+        SyslogInsert(const std::string &content, Session &session);
         SyslogInsert(const SyslogInsert& orig);
+        virtual ~SyslogInsert();
+
         std::string getContent() const;
         std::string getSD() const;
         long long getID() const;
-        virtual ~SyslogInsert();
 
     private:
         std::string _content, _sd;
@@ -39,7 +40,7 @@ class SyslogInsert {
         void detectSD();
         void setSD(std::string _sd);
         void setID(long long id);
-        void sqlInsert(Session *session);
+        void sqlInsert(Session &session);
 };
 
 #endif	/* SYSLOGINSERT_H */

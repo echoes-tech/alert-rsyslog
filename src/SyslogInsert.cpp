@@ -15,7 +15,8 @@
 
 using namespace std;
 
-SyslogInsert::SyslogInsert(const string &content, Session *session) {
+SyslogInsert::SyslogInsert(const string &content, Session &session)
+{
     // Retrieve Syslog Insertion given by rsyslog
     setContent(content);
 
@@ -28,10 +29,15 @@ SyslogInsert::SyslogInsert(const string &content, Session *session) {
         logger.entry("error") << "[SyslogInsert] Content is empty";
 }
 
-SyslogInsert::SyslogInsert(const SyslogInsert& orig) {
+SyslogInsert::SyslogInsert(const SyslogInsert& orig)
+{
     setContent(orig.getContent());
     setSD(orig.getSD());
     setID(orig.getID());
+}
+
+SyslogInsert::~SyslogInsert()
+{
 }
 
 void SyslogInsert::setContent(string content)
@@ -97,14 +103,28 @@ long long SyslogInsert::getID() const {
     return _id;
 }
 
-void SyslogInsert::sqlInsert(Session *session)
-{   
+void SyslogInsert::sqlInsert(Session &session)
+{
     try
     {
-        Wt::Dbo::Transaction transaction(*session);
+        Wt::Dbo::Transaction transaction(session);
         
-        session->execute(_content);
-        setID(session->query<int>("select currval('\"T_SYSLOG_SLO_SLO_ID_seq\"')"));
+        session.execute("INSERT INTO \"T_SYSLOG_SLO\"\n"
+"  (\n"
+"    version,\n"
+"    \"SLO_APP_NAME\",\n"
+"    \"SLO_HOSTNAME\",\n"
+"    \"SLO_SD\",\n"
+"    \"SLO_RCPT_DATE\",\n"
+"    \"SLO_SENT_DATE\",\n"
+"    \"SLO_PRI\",\n"
+"    \"SLO_MSG_ID\",\n"
+"    \"SLO_PROC_ID\",\n"
+"    \"SLO_STATE\"\n"
+"  ) values (\n"
+            + _content +
+"  ) RETURNING \"SLO_ID\";");
+        setID(session.query<long long>("select currval('\"T_SYSLOG_SLO_SLO_ID_seq\"')"));
 
         transaction.commit();
     }
@@ -114,8 +134,5 @@ void SyslogInsert::sqlInsert(Session *session)
     }
     
     return;
-}
-
-SyslogInsert::~SyslogInsert() {
 }
 

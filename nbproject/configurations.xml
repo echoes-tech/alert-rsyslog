@@ -7,7 +7,7 @@
     </logicalFolder>
     <logicalFolder name="etc" displayName="etc" projectFiles="true">
       <logicalFolder name="rsyslog.d" displayName="rsyslog.d" projectFiles="true">
-        <itemPath>etc/rsyslog.d/echoes-alert.conf.erb</itemPath>
+        <itemPath>etc/rsyslog.d/echoes-alert.conf</itemPath>
         <itemPath>etc/rsyslog.d/pgsql.conf</itemPath>
       </logicalFolder>
       <itemPath>etc/rsyslog.conf</itemPath>
@@ -68,6 +68,8 @@
       <toolsSet>
         <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
         <compilerSet>default</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <compileType>
         <ccTool>
@@ -86,9 +88,11 @@
           </linkerAddLib>
           <linkerLibItems>
             <linkerLibLibItem>dbo</linkerLibLibItem>
+            <linkerLibLibItem>wtdbo</linkerLibLibItem>
             <linkerLibLibItem>wt</linkerLibLibItem>
             <linkerLibLibItem>boost_regex</linkerLibLibItem>
             <linkerLibLibItem>boost_system</linkerLibLibItem>
+            <linkerLibLibItem>stdc++</linkerLibLibItem>
           </linkerLibItems>
         </linkerTool>
       </compileType>
@@ -98,10 +102,7 @@
       </item>
       <item path="etc/rsyslog.conf" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="etc/rsyslog.d/echoes-alert.conf.erb"
-            ex="false"
-            tool="3"
-            flavor2="0">
+      <item path="etc/rsyslog.d/echoes-alert.conf" ex="false" tool="3" flavor2="0">
       </item>
       <item path="etc/rsyslog.d/pgsql.conf" ex="false" tool="3" flavor2="0">
       </item>
@@ -152,6 +153,8 @@
       <toolsSet>
         <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
         <compilerSet>default</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <compileType>
         <cTool>
@@ -195,10 +198,7 @@
       </item>
       <item path="etc/rsyslog.conf" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="etc/rsyslog.d/echoes-alert.conf.erb"
-            ex="false"
-            tool="3"
-            flavor2="0">
+      <item path="etc/rsyslog.d/echoes-alert.conf" ex="false" tool="3" flavor2="0">
       </item>
       <item path="etc/rsyslog.d/pgsql.conf" ex="false" tool="3" flavor2="0">
       </item>

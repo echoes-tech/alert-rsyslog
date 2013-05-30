@@ -15,7 +15,7 @@
 
 using namespace std;
 
-StructuredData::StructuredData(const string &content, const long long &syslogID, Session *session)
+StructuredData::StructuredData(const string &content, const long long &syslogID, Session &session)
 {
     setSDElementPropPtr(NULL);
     setContent(content);
@@ -39,6 +39,12 @@ StructuredData::StructuredData(const StructuredData& orig)
     setSDElementPropPtr(orig.getSDElementPropPtr());
 }
 
+StructuredData::~StructuredData()
+{
+     delete _sdElementPropPtr;
+     setSDElementPropPtr(NULL);
+}
+
 void StructuredData::setContent(string content)
 {
     _content = content;
@@ -51,13 +57,12 @@ string StructuredData::getContent() const
     return _content;
 }
 
-void StructuredData::splitSDElements(const long long &syslogID, Session *session)
+void StructuredData::splitSDElements(const long long &syslogID, Session &session)
 {
     // Warning : this method doesn't work well if the value of SD-Params can contain the chars '[' ']'
     
     string sdTmp(_content);
     vector<string> sSDElements;
-    SDElement *sdElement = NULL;
 
     // SD-Element example : [prop@40311 ver=2 probe=0 token="abcdefghijklmo0123456789"][res1@40311 offset=2 4-1-3-4-1-1-1="U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE" 4-1-3-4-2-1-1="U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE"]
     
@@ -72,18 +77,16 @@ void StructuredData::splitSDElements(const long long &syslogID, Session *session
 
     for (unsigned i(0); i < sSDElements.size() - 1; ++i)
     {
-        sdElement = new SDElement(sSDElements[i] );
+        SDElement sdElement(sSDElements[i]);
 
-        if(!sdElement->getSDIDPtr()->getName().compare("prop"))
+        if(!sdElement.getSDIDPtr()->getName().compare("prop"))
         {
-            setSDElementPropPtr(new SDElementProp(*sdElement, syslogID, session));
+            setSDElementPropPtr(new SDElementProp(sdElement, syslogID, session));
         }
         else
         {
-            addSDElementResPtr(new SDElementRes(*sdElement));
+            addSDElementResPtr(new SDElementRes(sdElement));
         }
-
-        delete sdElement;
     }
 
     return;
@@ -114,7 +117,7 @@ SDElementProp* StructuredData::getSDElementPropPtr() const {
     return _sdElementPropPtr;
 }
 
-void StructuredData::createIVAs(const long long &syslogID, Session *session)
+void StructuredData::createIVAs(const long long &syslogID, Session &session)
 {
     bool isPartial = false;
     long long idAsset = 0, idPlugin = 0, idSource = 0, idSearch = 0;
@@ -125,9 +128,9 @@ void StructuredData::createIVAs(const long long &syslogID, Session *session)
 
     try
     {   
-        Wt::Dbo::Transaction transaction(*session);
+        Wt::Dbo::Transaction transaction(session);
 
-        Wt::Dbo::ptr<Syslog> sloPtr = session->find<Syslog>().where("\"SLO_ID\" = ?").bind(syslogID);
+        Wt::Dbo::ptr<Syslog> sloPtr = session.find<Syslog>().where("\"SLO_ID\" = ?").bind(syslogID);
 
         if (!sloPtr)
         {
@@ -155,7 +158,7 @@ void StructuredData::createIVAs(const long long &syslogID, Session *session)
                 value = Wt::Utils::base64Decode(_sdElementsResPtr[i]->getSDParamsResPtr()[j]->getValue());
                 
                 // we have to check wether the asset exists or not (been deleted ?)
-                Wt::Dbo::ptr<Asset> astPtr = session->find<Asset>()
+                Wt::Dbo::ptr<Asset> astPtr = session.find<Asset>()
                         .where("\"AST_ID\" = ?").bind(idAsset)
                         .where("\"AST_DELETE\" IS NULL")
                         .limit(1);
@@ -168,7 +171,7 @@ void StructuredData::createIVAs(const long long &syslogID, Session *session)
                 }
 
                 // we verify the unit of the collected information before saving it linked to an information entry.   
-                Wt::Dbo::ptr<SearchUnit> seuPtr = session->find<SearchUnit>()
+                Wt::Dbo::ptr<SearchUnit> seuPtr = session.find<SearchUnit>()
                         .where("\"PLG_ID_PLG_ID\" = ?").bind(idPlugin)
                         .where("\"SRC_ID\" = ?").bind(idSource)
                         .where("\"SEA_ID\" = ?").bind(idSearch)
@@ -187,7 +190,7 @@ void StructuredData::createIVAs(const long long &syslogID, Session *session)
                 }
 
                 logger.entry("debug") << "[StructuredData] looking for INF";
-                Wt::Dbo::ptr<Information2> infPtr = session->find<Information2>()
+                Wt::Dbo::ptr<Information2> infPtr = session.find<Information2>()
                         .where("\"PLG_ID_PLG_ID\" = ?").bind(idPlugin)
                         .where("\"SRC_ID\" = ?").bind(idSource)
                         .where("\"SEA_ID\" = ?").bind(idSearch)
@@ -261,7 +264,9 @@ void StructuredData::createIVAs(const long long &syslogID, Session *session)
                     informationValueToAdd->state = 0;
                 }
 
-                session->add<InformationValue>(informationValueToAdd);
+                Wt::Dbo::ptr<InformationValue> ivaPtr = session.add<InformationValue>(informationValueToAdd);
+                ivaPtr.flush();
+                logger.entry("debug") << "[StructuredData] IVA " << ivaPtr.id() << " created";
             }
         }
 
@@ -284,11 +289,5 @@ void StructuredData::createIVAs(const long long &syslogID, Session *session)
     }
 
     return;
-}
-
-StructuredData::~StructuredData()
-{
-     delete _sdElementPropPtr;
-     setSDElementPropPtr(NULL);
 }
 

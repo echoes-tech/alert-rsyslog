@@ -22,52 +22,43 @@ SessionPool* SessionPool::instance = 0;
 string SessionPool::credentials = "";
 boost::mutex SessionPool::mutex;
 
+#define SOFTWARE_NAME "ECHOES Alert - Rsyslog Parser"
+#define SOFTWARE_VERSION "0.1.0"
+
 /*
  * 
  */
 int main(int argc, char** argv) {
     int res = EXIT_FAILURE;
-    Conf *conf = NULL;
-    Session *session = NULL;
     string input = "";
     
-    logger.entry("info") << "[origin enterpriseId=\"40311\" software=\"ECHOES Alert - Rsyslog Parser\" swVersion=\"0.1.0.beta3\"] (re)start";
+    logger.entry("info") << "[origin enterpriseId=\"40311\" software=\"" << SOFTWARE_NAME << "\" swVersion=\"" << SOFTWARE_VERSION << "\"] (re)start";
 
     // Loading conf
-    conf = new Conf();
-    logger.setType(conf->getCriticity());
-    if (conf->getDBPort() != 0)
+    Conf conf;
+    logger.setType(conf.getCriticity());
+    if (conf.getDBPort() != 0)
     {
-        SyslogInsert *syslogInsert = NULL;
-        StructuredData *sd = NULL;
-
         // Setting the session
-        session = new Session(conf->getSessConnectParams());
+        Session session(conf.getSessConnectParams());
 
         while (!getline(cin, input).eof())
         {
             if(input.compare(""))
             {
                 // Processing the Syslog Insertion and detection Structured Data
-                syslogInsert = new SyslogInsert(input, session);
+                SyslogInsert syslogInsert(input, session);
 
-                sd = new StructuredData(syslogInsert->getSD(), syslogInsert->getID(), session);
-
-                delete sd;
-                delete syslogInsert;
+                StructuredData sd(syslogInsert.getSD(), syslogInsert.getID(), session);
             }
             else
                 logger.entry("warning") << "[Main] Input is empty";
         }
 
-        delete session;
-
         res = EXIT_SUCCESS;
     }
 
-    delete conf;
-
-    logger.entry("info") << "[origin enterpriseId=\"40311\" software=\"ECHOES Alert - Rsyslog Parser\" swVersion=\"0.1.0.beta3\"] stop";
+    logger.entry("info") << "[origin enterpriseId=\"40311\" software=\"" << SOFTWARE_NAME << "\" swVersion=\"" << SOFTWARE_VERSION << "\"] stop";
 
     return res;
 }
