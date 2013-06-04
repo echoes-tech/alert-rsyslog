@@ -254,6 +254,7 @@ void StructuredData::createIVAs(const long long &syslogID, Session &session)
                 informationValueToAdd->lotNumber = lotNumber;
                 informationValueToAdd->lineNumber = lineNumber;            
                 informationValueToAdd->asset = astPtr;
+                informationValueToAdd->syslog = sloPtr;
 
                 if (!calculate.empty())
                 {
