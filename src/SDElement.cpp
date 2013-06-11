@@ -15,8 +15,8 @@
 
 using namespace std;
 
-SDElement::SDElement(const string &content) {
-    setSDIDPtr(NULL);
+SDElement::SDElement(const string &content)
+{
     setContent(content);
 
     if(_content.compare(""))
@@ -31,10 +31,16 @@ SDElement::SDElement(const string &content) {
         logger.entry("error") << "[SDElement] Content is empty";
 }
 
-SDElement::SDElement(const SDElement& orig) {
+SDElement::SDElement(const SDElement& orig)
+{
     setContent(orig.getContent());
-    setSDIDPtr(orig.getSDIDPtr());
-    setSDParamPtr(orig.getSDParamsPtr());
+    setSDID(orig.getSDID());
+    setSDParam(orig.getSDParams());
+    setSDParamsString(orig.getSDParamsString());
+}
+
+SDElement::~SDElement()
+{
 }
 
 void SDElement::setContent(string content)
@@ -61,7 +67,7 @@ void SDElement::detectSDID()
             if (what.size() == 4) {
                 try
                 {
-                    setSDIDPtr( new SDID(what[1], boost::lexical_cast<unsigned>(what[2])) );
+                    setSDID(SDID(what[1], boost::lexical_cast<unsigned>(what[2])));
                 }
                 catch (boost::bad_lexical_cast &)
                 {
@@ -87,19 +93,19 @@ void SDElement::detectSDID()
     return;
 }
 
-void SDElement::setSDIDPtr(SDID *sdIDPtr)
+void SDElement::setSDID(SDID sdID)
 {
-    _sdIDPtr = sdIDPtr;
+    _sdID = sdID;
 
     return;
 }
 
-SDID* SDElement::getSDIDPtr() const
+SDID SDElement::getSDID() const
 {
-    return _sdIDPtr;
+    return *_sdID;
 }
 
-void SDElement::setSDParamsString(std::string sdParamsString)
+void SDElement::setSDParamsString(const string sdParamsString)
 {
     _sdParamsString = sdParamsString;
     return;
@@ -114,7 +120,6 @@ void SDElement::splitSDParams()
 {
     string sdParamsTmp(_sdParamsString);
     vector<string> sSDParams;
-    SDParamPtr sdParamPtr;
     
     //offset=2 4-1-3-4-1-1-1="U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE" 4-1-3-4-2-1-1="U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE"
 
@@ -125,33 +130,28 @@ void SDElement::splitSDParams()
 
     for (unsigned i(0); i < sSDParams.size(); ++i)
     {
-        sdParamPtr.reset( new SDParam(sSDParams[i]) );
-
-        addSDParamPtr(sdParamPtr);
+        addSDParam(SDParam(sSDParams[i]));
     }
     
     return;
 }
 
-void SDElement::setSDParamPtr(vector<SDParamPtr> sdParamsPtr)
+void SDElement::setSDParam(vector<SDParam> sdParams)
 {
-    _sdParamsPtr = sdParamsPtr;
+    _sdParams = sdParams;
 
     return;
 }
 
 
-void SDElement::addSDParamPtr(SDParamPtr sdParamPtr)
+void SDElement::addSDParam(const SDParam &sdParam)
 {
-    _sdParamsPtr.push_back(sdParamPtr);
+    _sdParams.push_back(sdParam);
     return;
 }
 
-vector<SDParamPtr> SDElement::getSDParamsPtr() const
+vector<SDParam> SDElement::getSDParams() const
 {
-    return _sdParamsPtr;
-}
-
-SDElement::~SDElement() {
+    return _sdParams;
 }
 

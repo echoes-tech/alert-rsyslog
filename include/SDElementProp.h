@@ -20,14 +20,15 @@
 class SDElementProp : public SDElement
 {
     public:
-        SDElementProp(const SDElement& sdElement, const long long &syslogID, Session &session);
+        SDElementProp(const std::string &content, const long long &syslogID, Session &session);
         SDElementProp(const SDElementProp& orig);
+        virtual ~SDElementProp();
+
         std::string getToken() const;
         bool isValidToken(Session &session) const;
         unsigned getProbeID() const;
         unsigned getVersion() const;
         Wt::Dbo::ptr<Probe> getProbeWtDBOPtr() const;
-        virtual ~SDElementProp();
 
     private:
         unsigned _probeID, _version;

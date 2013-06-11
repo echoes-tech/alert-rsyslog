@@ -19,30 +19,29 @@
 #include "SDID.h"
 #include "SDParam.h"
 
-typedef boost::shared_ptr<SDParam> SDParamPtr;
-
 class SDElement {
     public:
         SDElement(const std::string &content);
         SDElement(const SDElement& orig);
-        std::string getContent() const;
-        SDID* getSDIDPtr() const;
-        std::string getSDParamsString() const;
-        std::vector<SDParamPtr> getSDParamsPtr() const;
         virtual ~SDElement();
+
+        std::string getContent() const;
+        SDID getSDID() const;
+        std::string getSDParamsString() const;
+        std::vector<SDParam> getSDParams() const;
 
     protected:
         std::string _content, _sdParamsString;
-        SDID *_sdIDPtr;
-        std::vector<SDParamPtr> _sdParamsPtr;
+        boost::optional<SDID> _sdID;
+        std::vector<SDParam> _sdParams;
         
         void setContent(std::string content);
         void detectSDID();
-        void setSDIDPtr(SDID *sdIDPtr);
-        void setSDParamsString(std::string sSDParams);
+        void setSDID(SDID sdID);
+        void setSDParamsString(const std::string sdParamsString);
         void splitSDParams();
-        void addSDParamPtr(SDParamPtr sdParamPtr);
-        void setSDParamPtr(std::vector<SDParamPtr> sdParamsPtr);
+        void addSDParam(const SDParam &sdParam);
+        void setSDParam(std::vector<SDParam> sdParams);
 
 };
 

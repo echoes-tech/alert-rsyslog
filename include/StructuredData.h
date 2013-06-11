@@ -21,8 +21,6 @@
 #include "SDElementProp.h"
 #include "SDElementRes.h"
 
-typedef boost::shared_ptr<SDElementRes> SDElementResPtr;
-
 class StructuredData {
     public:
         StructuredData(const std::string &content, const long long &syslogID, Session &session);
@@ -30,19 +28,19 @@ class StructuredData {
         virtual ~StructuredData();
 
         std::string getContent() const;
-        std::vector<SDElementResPtr> getSDElementsResPtr() const;
-        SDElementProp* getSDElementPropPtr() const;
+        std::vector<SDElementRes> getSDElementsRes() const;
+        SDElementProp getSDElementProp() const;
 
     private:
         std::string _content;
-        SDElementProp *_sdElementPropPtr;
-        std::vector<SDElementResPtr> _sdElementsResPtr;
+        boost::optional<SDElementProp> _sdElementProp;
+        std::vector<SDElementRes> _sdElementsRes;
 
         void setContent(std::string content);
         void splitSDElements(const long long &syslogID, Session &session);
-        void setSDElementsResPtr(std::vector<SDElementResPtr> _sdElementsResPtr);
-        void addSDElementResPtr(SDElementRes *sdElementResPtr);
-        void setSDElementPropPtr(SDElementProp *sdElementProp);
+        void setSDElementsRes(std::vector<SDElementRes> _sdElementsRes);
+        void addSDElementRes(const SDElementRes &sdElementRes);
+        void setSDElementProp(SDElementProp sdElementProp);
         void createIVAs(const long long &syslogID, Session &session);
 };
 

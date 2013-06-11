@@ -17,24 +17,23 @@
 #include "SDElement.h"
 #include "SDParamRes.h"
 
-typedef boost::shared_ptr<SDParamRes> SDParamResPtr;
-
 class SDElementRes : public SDElement {
     public:
-        SDElementRes(const SDElement& sdElement);
+        SDElementRes(const std::string &content);
         SDElementRes(const SDElementRes& orig);
-        unsigned getOffset() const;
-        std::vector<SDParamResPtr> getSDParamsResPtr() const;
         virtual ~SDElementRes();
+
+        unsigned getOffset() const;
+        std::vector<SDParamRes> getSDParamsRes() const;
 
     private:
         unsigned _offset;
-        std::vector<SDParamResPtr> _sdParamsResPtr;
+        std::vector<SDParamRes> _sdParamsRes;
 
         void detectResKeys();
         void setOffset(unsigned _offset);
-        void addSDParamResPtr(SDParamResPtr sdParamResPtr);
-        void setSDParamsResPtr(std::vector<SDParamResPtr> sdParamsResPtr);
+        void addSDParamRes(const SDParamRes &sdParamRes);
+        void setSDParamsRes(std::vector<SDParamRes> sdParamsRes);
 };
 
 #endif	/* SDELEMENTRES_H */

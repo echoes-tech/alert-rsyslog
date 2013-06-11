@@ -17,32 +17,38 @@ using namespace std;
 
 StructuredData::StructuredData(const string &content, const long long &syslogID, Session &session)
 {
-    setSDElementPropPtr(NULL);
     setContent(content);
 
     if(_content.compare(""))
     {
         splitSDElements(syslogID, session);
-        if(_sdElementPropPtr->getProbeWtDBOPtr().id() > 0 && _sdElementPropPtr->isValidToken(session))
+        if(_sdElementProp)
         {
-            createIVAs(syslogID, session);
+            if(_sdElementProp->getProbeWtDBOPtr().id() > 0 && _sdElementProp->isValidToken(session))
+            {
+                createIVAs(syslogID, session);
+            }
+        }
+        else
+        {
+            logger.entry("error") << "[StructuredData] SD Element Prop is empty";
         }
     }
     else
+    {
         logger.entry("error") << "[StructuredData] Content is empty";
+    }
 }
 
 StructuredData::StructuredData(const StructuredData& orig)
 {
     setContent(orig.getContent());
-    setSDElementsResPtr(orig.getSDElementsResPtr());
-    setSDElementPropPtr(orig.getSDElementPropPtr());
+    setSDElementsRes(orig.getSDElementsRes());
+    setSDElementProp(orig.getSDElementProp());
 }
 
 StructuredData::~StructuredData()
 {
-     delete _sdElementPropPtr;
-     setSDElementPropPtr(NULL);
 }
 
 void StructuredData::setContent(string content)
@@ -79,42 +85,45 @@ void StructuredData::splitSDElements(const long long &syslogID, Session &session
     {
         SDElement sdElement(sSDElements[i]);
 
-        if(!sdElement.getSDIDPtr()->getName().compare("prop"))
+        if(!sdElement.getSDID().getName().compare("prop"))
         {
-            setSDElementPropPtr(new SDElementProp(sdElement, syslogID, session));
+            setSDElementProp(SDElementProp(sSDElements[i], syslogID, session));
         }
         else
         {
-            addSDElementResPtr(new SDElementRes(sdElement));
+            addSDElementRes(SDElementRes(sSDElements[i]));
         }
     }
 
     return;
 }
 
-void StructuredData::setSDElementsResPtr(vector<SDElementResPtr> sdElementsResPtr) {
-    _sdElementsResPtr = sdElementsResPtr;
-}
-
-void StructuredData::addSDElementResPtr(SDElementRes *sdElementResPtr)
+void StructuredData::setSDElementsRes(vector<SDElementRes> sdElementsRes)
 {
-    SDElementResPtr _sdElementResPtr(sdElementResPtr);
-    _sdElementsResPtr.push_back(_sdElementResPtr);
+    _sdElementsRes = sdElementsRes;
     return;
 }
 
-vector<SDElementResPtr> StructuredData::getSDElementsResPtr() const
+void StructuredData::addSDElementRes(const SDElementRes &sdElementRes)
 {
-    return _sdElementsResPtr;
-}
-
-void StructuredData::setSDElementPropPtr(SDElementProp *sdElementPropPtr) {
-    _sdElementPropPtr = sdElementPropPtr;
+    _sdElementsRes.push_back(sdElementRes);
     return;
 }
 
-SDElementProp* StructuredData::getSDElementPropPtr() const {
-    return _sdElementPropPtr;
+vector<SDElementRes> StructuredData::getSDElementsRes() const
+{
+    return _sdElementsRes;
+}
+
+void StructuredData::setSDElementProp(SDElementProp sdElementProp)
+{
+    _sdElementProp = sdElementProp;
+    return;
+}
+
+SDElementProp StructuredData::getSDElementProp() const
+{
+    return *_sdElementProp;
 }
 
 void StructuredData::createIVAs(const long long &syslogID, Session &session)
@@ -140,22 +149,22 @@ void StructuredData::createIVAs(const long long &syslogID, Session &session)
         sloPtr.modify()->state = 1;
         sloPtr.flush();
     
-        for (unsigned i(0); i < _sdElementsResPtr.size(); ++i)
+        for (unsigned i(0); i < _sdElementsRes.size(); ++i)
         {
-            offset = _sdElementsResPtr[i]->getOffset();
+            offset = _sdElementsRes[i].getOffset();
 
-            for (unsigned j(0); j < _sdElementsResPtr[i]->getSDParamsResPtr().size() ; ++j)
+            for (unsigned j(0); j < _sdElementsRes[i].getSDParamsRes().size() ; ++j)
             {
                 InformationValue *informationValueToAdd = new InformationValue();
-                idAsset = _sdElementsResPtr[i]->getSDParamsResPtr()[j]->getIDAsset();
-                idPlugin = _sdElementsResPtr[i]->getSDParamsResPtr()[j]->getIDPlugin();
-                idSource = _sdElementsResPtr[i]->getSDParamsResPtr()[j]->getIDSource();
-                idSearch = _sdElementsResPtr[i]->getSDParamsResPtr()[j]->getIDSearch();
-                valueNum = _sdElementsResPtr[i]->getSDParamsResPtr()[j]->getValueNum();
-                lotNumber = _sdElementsResPtr[i]->getSDParamsResPtr()[j]->getLotNumber();
-                lineNumber = _sdElementsResPtr[i]->getSDParamsResPtr()[j]->getLineNumber();
+                idAsset = _sdElementsRes[i].getSDParamsRes()[j].getIDAsset();
+                idPlugin = _sdElementsRes[i].getSDParamsRes()[j].getIDPlugin();
+                idSource = _sdElementsRes[i].getSDParamsRes()[j].getIDSource();
+                idSearch = _sdElementsRes[i].getSDParamsRes()[j].getIDSearch();
+                valueNum = _sdElementsRes[i].getSDParamsRes()[j].getValueNum();
+                lotNumber = _sdElementsRes[i].getSDParamsRes()[j].getLotNumber();
+                lineNumber = _sdElementsRes[i].getSDParamsRes()[j].getLineNumber();
 
-                value = Wt::Utils::base64Decode(_sdElementsResPtr[i]->getSDParamsResPtr()[j]->getValue());
+                value = Wt::Utils::base64Decode(_sdElementsRes[i].getSDParamsRes()[j].getValue());
                 
                 // we have to check wether the asset exists or not (been deleted ?)
                 Wt::Dbo::ptr<Asset> astPtr = session.find<Asset>()

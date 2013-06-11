@@ -15,39 +15,41 @@
 
 using namespace std;
 
-SDElementRes::SDElementRes(const SDElement& sdElement) : SDElement(sdElement) {
+SDElementRes::SDElementRes(const string &content) : SDElement(content)
+{
     setOffset(0);
     detectResKeys();
 }
 
-SDElementRes::SDElementRes(const SDElementRes& orig) : SDElement(orig)  {
+SDElementRes::SDElementRes(const SDElementRes& orig) : SDElement(orig)
+{
     setOffset(orig.getOffset());
-    setSDParamsString(orig.getSDParamsString());
+    setSDParamsRes(orig.getSDParamsRes());
+}
+
+SDElementRes::~SDElementRes()
+{
 }
 
 void SDElementRes::detectResKeys()
 {   
-    SDParamResPtr sdParamResPtr;
-    
-    for (unsigned i(0); i < _sdParamsPtr.size(); ++i)
+    for (unsigned i(0); i < _sdParams.size(); ++i)
     {
-        if(!_sdParamsPtr[i]->getKey().compare("offset"))
+        if(!_sdParams[i].getKey().compare("offset"))
         {
             try
             {
-                setOffset(boost::lexical_cast<unsigned>(_sdParamsPtr[i]->getValue()));
+                setOffset(boost::lexical_cast<unsigned>(_sdParams[i].getValue()));
             }
             catch (boost::bad_lexical_cast &)
             {
                logger.entry("error") << "[SDElementRes] Offset is not an unsigned on SD-Element Res";
             }
         }
-        else if (!boost::starts_with(_sdParamsPtr[i]->getKey(), "res"))
+        else if (!boost::starts_with(_sdParams[i].getKey(), "res"))
         {
             // 2-1-1-2-1-1
-            sdParamResPtr.reset( new SDParamRes(*(_sdParamsPtr[i])) );
-
-            addSDParamResPtr(sdParamResPtr);
+            addSDParamRes(SDParamRes(_sdParams[i]));
         }
     }
     
@@ -66,28 +68,22 @@ unsigned SDElementRes::getOffset() const
     return _offset;
 }
 
-void SDElementRes::setSDParamsResPtr(vector<SDParamResPtr> sdParamsResPtr)
+void SDElementRes::setSDParamsRes(vector<SDParamRes> sdParamsRes)
 {
-    _sdParamsResPtr = sdParamsResPtr;
+    _sdParamsRes = sdParamsRes;
 
     return;
 }
 
 
-void SDElementRes::addSDParamResPtr(SDParamResPtr sdParamResPtr)
+void SDElementRes::addSDParamRes(const SDParamRes &sdParamRes)
 {
-    _sdParamsResPtr.push_back(sdParamResPtr);
+    _sdParamsRes.push_back(sdParamRes);
     return;
 }
 
-vector<SDParamResPtr> SDElementRes::getSDParamsResPtr() const
+vector<SDParamRes> SDElementRes::getSDParamsRes() const
 {
-    return _sdParamsResPtr;
-}
-
-SDElementRes::~SDElementRes()
-{
-    delete _sdIDPtr;
-    _sdIDPtr = NULL;
+    return _sdParamsRes;
 }
 
