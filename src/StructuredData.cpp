@@ -133,7 +133,6 @@ void StructuredData::createIVAs(const long long &syslogID, Session &session)
     unsigned offset = 0, lotNumber = 0, lineNumber = 0;
     int valueNum = 0;
     string value = "";
-    Wt::WString calculate = Wt::WString::Empty;
 
     try
     {   
@@ -145,10 +144,12 @@ void StructuredData::createIVAs(const long long &syslogID, Session &session)
         {
             sloPtr.modify()->state = 1;
             sloPtr.flush();
+            Wt::WDateTime sendDate = sloPtr->sentDate;
 
             for (unsigned i(0); i < _sdElementsRes.size(); ++i)
             {
                 offset = _sdElementsRes[i].getOffset();
+                Wt::WDateTime creationDate = sendDate.addSecs(offset);
 
                 for (unsigned j(0); j < _sdElementsRes[i].getSDParamsRes().size() ; ++j)
                 {
@@ -251,6 +252,7 @@ void StructuredData::createIVAs(const long long &syslogID, Session &session)
 
                     // we check whether we have to calculate something about the information
                     logger.entry("debug") << "[StructuredData] Calculate this INF ?";
+                    Wt::WString calculate = Wt::WString::Empty;
                     if (infPtr->calculate)
                     {
                         if (!infPtr->calculate.get().empty())
@@ -276,7 +278,7 @@ void StructuredData::createIVAs(const long long &syslogID, Session &session)
                     logger.entry("debug") << "[StructuredData] Set value";
                     informationValueToAdd->value = value;
                     logger.entry("debug") << "[StructuredData] Set creation date";
-                    informationValueToAdd->creationDate = sloPtr->sentDate.addSecs(offset);
+                    informationValueToAdd->creationDate = creationDate;
                     logger.entry("debug") << "[StructuredData] Set lot number";
                     informationValueToAdd->lotNumber = lotNumber;
                     logger.entry("debug") << "[StructuredData] Set line number";
