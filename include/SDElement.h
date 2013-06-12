@@ -38,7 +38,7 @@ class SDElement {
         void setContent(std::string content);
         void detectSDID();
         void setSDID(SDID sdID);
-        void setSDParamsString(const std::string sdParamsString);
+        void setSDParamsString(std::string sdParamsString);
         void splitSDParams();
         void addSDParam(const SDParam &sdParam);
         void setSDParam(std::vector<SDParam> sdParams);

@@ -141,154 +141,156 @@ void StructuredData::createIVAs(const long long &syslogID, Session &session)
 
         Wt::Dbo::ptr<Syslog> sloPtr = session.find<Syslog>().where("\"SLO_ID\" = ?").bind(syslogID);
 
-        if (!sloPtr)
+        if (sloPtr)
         {
-            logger.entry("error") << "[StructuredData] Syslog with id : " << syslogID << " doesn't exist." ;
-            transaction.commit();
-        }
-        sloPtr.modify()->state = 1;
-        sloPtr.flush();
-    
-        for (unsigned i(0); i < _sdElementsRes.size(); ++i)
-        {
-            offset = _sdElementsRes[i].getOffset();
+            sloPtr.modify()->state = 1;
+            sloPtr.flush();
 
-            for (unsigned j(0); j < _sdElementsRes[i].getSDParamsRes().size() ; ++j)
+            for (unsigned i(0); i < _sdElementsRes.size(); ++i)
             {
-                InformationValue *informationValueToAdd = new InformationValue();
-                idAsset = _sdElementsRes[i].getSDParamsRes()[j].getIDAsset();
-                idPlugin = _sdElementsRes[i].getSDParamsRes()[j].getIDPlugin();
-                idSource = _sdElementsRes[i].getSDParamsRes()[j].getIDSource();
-                idSearch = _sdElementsRes[i].getSDParamsRes()[j].getIDSearch();
-                valueNum = _sdElementsRes[i].getSDParamsRes()[j].getValueNum();
-                lotNumber = _sdElementsRes[i].getSDParamsRes()[j].getLotNumber();
-                lineNumber = _sdElementsRes[i].getSDParamsRes()[j].getLineNumber();
+                offset = _sdElementsRes[i].getOffset();
 
-                value = Wt::Utils::base64Decode(_sdElementsRes[i].getSDParamsRes()[j].getValue());
-                
-                // we have to check wether the asset exists or not (been deleted ?)
-                Wt::Dbo::ptr<Asset> astPtr = session.find<Asset>()
-                        .where("\"AST_ID\" = ?").bind(idAsset)
-                        .where("\"AST_DELETE\" IS NULL")
-                        .limit(1);
-
-                if (!astPtr)
+                for (unsigned j(0); j < _sdElementsRes[i].getSDParamsRes().size() ; ++j)
                 {
-                    logger.entry("error") << "[StructuredData] Asset with id : " << idAsset << " doesn't exist." ;
-                    isPartial = true;
-                    continue;
-                }
+                    InformationValue *informationValueToAdd = new InformationValue();
+                    idAsset = _sdElementsRes[i].getSDParamsRes()[j].getIDAsset();
+                    idPlugin = _sdElementsRes[i].getSDParamsRes()[j].getIDPlugin();
+                    idSource = _sdElementsRes[i].getSDParamsRes()[j].getIDSource();
+                    idSearch = _sdElementsRes[i].getSDParamsRes()[j].getIDSearch();
+                    valueNum = _sdElementsRes[i].getSDParamsRes()[j].getValueNum();
+                    lotNumber = _sdElementsRes[i].getSDParamsRes()[j].getLotNumber();
+                    lineNumber = _sdElementsRes[i].getSDParamsRes()[j].getLineNumber();
 
-                // we verify the unit of the collected information before saving it linked to an information entry.   
-                Wt::Dbo::ptr<SearchUnit> seuPtr = session.find<SearchUnit>()
-                        .where("\"PLG_ID_PLG_ID\" = ?").bind(idPlugin)
-                        .where("\"SRC_ID\" = ?").bind(idSource)
-                        .where("\"SEA_ID\" = ?").bind(idSearch)
-                        .where("\"INF_VALUE_NUM\" = ?").bind(valueNum)
-                        .limit(1); 
+                    value = Wt::Utils::base64Decode(_sdElementsRes[i].getSDParamsRes()[j].getValue());
 
-                if (!seuPtr)
-                {
-                    logger.entry("error") << "[StructuredData] No search unit retrieved for values :" << value
-                                                             << " seaId : " << idSearch 
-                                                             << " srcId : " << idSource 
-                                                             << " plgId : " << idPlugin
-                                                             << " valueNum : " << valueNum;
-                    isPartial = true;
-                    continue;
-                }
+                    // we have to check wether the asset exists or not (been deleted ?)
+                    Wt::Dbo::ptr<Asset> astPtr = session.find<Asset>()
+                            .where("\"AST_ID\" = ?").bind(idAsset)
+                            .where("\"AST_DELETE\" IS NULL")
+                            .limit(1);
 
-                logger.entry("debug") << "[StructuredData] looking for INF";
-                Wt::Dbo::ptr<Information2> infPtr = session.find<Information2>()
-                        .where("\"PLG_ID_PLG_ID\" = ?").bind(idPlugin)
-                        .where("\"SRC_ID\" = ?").bind(idSource)
-                        .where("\"SEA_ID\" = ?").bind(idSearch)
-                        .where("\"INF_VALUE_NUM\" = ?").bind(valueNum)
-                        .where("\"INU_ID_INU_ID\" = ?").bind(seuPtr->informationUnit.id())
-                        .limit(1);
-
-                // we check whether we have to calculate something about the information
-                logger.entry("debug") << "[StructuredData] Calculate this INF ?";
-                if (!infPtr)
-                {
-                    logger.entry("error") << "[StructuredData] No infPtr" ;
-                    isPartial = true;
-                    continue;
-                }
-
-                if(infPtr->pk.unit->unitType.id() == Enums::NUMBER)
-                {
-                    try
+                    if (!astPtr)
                     {
-                        boost::lexical_cast<long double>(value);
-                    }
-                    catch(boost::bad_lexical_cast &)
-                    {
-                        logger.entry("error")
-                                << "[StructuredData] Values :" << value
-                                << " seaId : " << idSearch
-                                << " srcId : " << idSource
-                                << " plgId : " << idPlugin
-                                << " valueNum : " << valueNum
-                                << " astId: " << idAsset
-                                << " must be a number";
+                        logger.entry("error") << "[StructuredData] Asset with id : " << idAsset << " doesn't exist." ;
                         isPartial = true;
                         continue;
                     }
-                }
-                
-                if (infPtr->calculate)
-                {
-                    if (!infPtr->calculate.get().empty())
+
+                    // we verify the unit of the collected information before saving it linked to an information entry.   
+                    Wt::Dbo::ptr<SearchUnit> seuPtr = session.find<SearchUnit>()
+                            .where("\"PLG_ID_PLG_ID\" = ?").bind(idPlugin)
+                            .where("\"SRC_ID\" = ?").bind(idSource)
+                            .where("\"SEA_ID\" = ?").bind(idSearch)
+                            .where("\"INF_VALUE_NUM\" = ?").bind(valueNum)
+                            .limit(1); 
+
+                    if (!seuPtr)
                     {
-                        calculate = infPtr->calculate.get();
-                        logger.entry("debug") << "[StructuredData] Calculation found : " << calculate ;
+                        logger.entry("error") << "[StructuredData] No search unit retrieved for values:" << value
+                                                                 << " seaId: " << idSearch 
+                                                                 << " srcId: " << idSource 
+                                                                 << " plgId: " << idPlugin
+                                                                 << " valueNum: " << valueNum;
+                        isPartial = true;
+                        continue;
+                    }
+
+                    logger.entry("debug") << "[StructuredData] looking for INF";
+                    Wt::Dbo::ptr<Information2> infPtr = session.find<Information2>()
+                            .where("\"PLG_ID_PLG_ID\" = ?").bind(idPlugin)
+                            .where("\"SRC_ID\" = ?").bind(idSource)
+                            .where("\"SEA_ID\" = ?").bind(idSearch)
+                            .where("\"INF_VALUE_NUM\" = ?").bind(valueNum)
+                            .where("\"INU_ID_INU_ID\" = ?").bind(seuPtr->informationUnit.id())
+                            .limit(1);
+
+                    // we check whether we have to calculate something about the information
+                    logger.entry("debug") << "[StructuredData] Calculate this INF ?";
+                    if (!infPtr)
+                    {
+                        logger.entry("error") << "[StructuredData] No infPtr" ;
+                        isPartial = true;
+                        continue;
+                    }
+
+                    if(infPtr->pk.unit->unitType.id() == Enums::NUMBER)
+                    {
+                        try
+                        {
+                            boost::lexical_cast<long double>(value);
+                        }
+                        catch(boost::bad_lexical_cast &)
+                        {
+                            logger.entry("error")
+                                    << "[StructuredData] Values :" << value
+                                    << " seaId : " << idSearch
+                                    << " srcId : " << idSource
+                                    << " plgId : " << idPlugin
+                                    << " valueNum : " << valueNum
+                                    << " astId: " << idAsset
+                                    << " must be a number";
+                            isPartial = true;
+                            continue;
+                        }
+                    }
+
+                    if (infPtr->calculate)
+                    {
+                        if (!infPtr->calculate.get().empty())
+                        {
+                            calculate = infPtr->calculate.get();
+                            logger.entry("debug") << "[StructuredData] Calculation found: " << calculate ;
+                        }
+                        else
+                        {
+                            logger.entry("error") << "[StructuredData] No calculation found, should have" ;
+                            isPartial = true;
+                            continue;
+                        }
                     }
                     else
                     {
-                        logger.entry("error") << "[StructuredData] No calculation found, should have" ;
-                        isPartial = true;
-                        continue;
+                        logger.entry("debug") << "[StructuredData] No calculation required" ;
                     }
-                }
-                else
-                {
-                    logger.entry("debug") << "[StructuredData] No calculation required" ;
-                }
 
-                //get sent date of the the associated syslog
-                informationValueToAdd->information = infPtr;
-                informationValueToAdd->value = value;
-                informationValueToAdd->creationDate = sloPtr->sentDate.addSecs(offset);
-                informationValueToAdd->lotNumber = lotNumber;
-                informationValueToAdd->lineNumber = lineNumber;            
-                informationValueToAdd->asset = astPtr;
-                informationValueToAdd->syslog = sloPtr;
+                    //get sent date of the the associated syslog
+                    informationValueToAdd->information = infPtr;
+                    informationValueToAdd->value = value;
+                    informationValueToAdd->creationDate = sloPtr->sentDate.addSecs(offset);
+                    informationValueToAdd->lotNumber = lotNumber;
+                    informationValueToAdd->lineNumber = lineNumber;            
+                    informationValueToAdd->asset = astPtr;
+                    informationValueToAdd->syslog = sloPtr;
 
-                if (!calculate.empty())
-                {
-                    informationValueToAdd->state = 9;
-                }   
-                else
-                {
-                    informationValueToAdd->state = 0;
+                    if (!calculate.empty())
+                    {
+                        informationValueToAdd->state = 9;
+                    }   
+                    else
+                    {
+                        informationValueToAdd->state = 0;
+                    }
+
+                    Wt::Dbo::ptr<InformationValue> ivaPtr = session.add<InformationValue>(informationValueToAdd);
+                    ivaPtr.flush();
+                    logger.entry("debug") << "[StructuredData] IVA " << ivaPtr.id() << " created";
                 }
-
-                Wt::Dbo::ptr<InformationValue> ivaPtr = session.add<InformationValue>(informationValueToAdd);
-                ivaPtr.flush();
-                logger.entry("debug") << "[StructuredData] IVA " << ivaPtr.id() << " created";
             }
-        }
 
-        if (isPartial)
-        {
-            logger.entry("info") << "[StructuredData] SLO " << syslogID << " partially converted into IVA";
-            sloPtr.modify()->state = 3;
+            if (isPartial)
+            {
+                logger.entry("info") << "[StructuredData] SLO " << syslogID << " partially converted into IVA";
+                sloPtr.modify()->state = 3;
+            }
+            else
+            {
+                logger.entry("debug") << "[StructuredData] SLO " << syslogID << " totally converted into IVA";
+                sloPtr.modify()->state = 2;
+            }
         }
         else
         {
-            logger.entry("debug") << "[StructuredData] SLO " << syslogID << " totally converted into IVA";
-            sloPtr.modify()->state = 2;
+            logger.entry("error") << "[StructuredData] Syslog with id : " << syslogID << " doesn't exist." ;
         }
         
         transaction.commit();

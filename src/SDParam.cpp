@@ -79,11 +79,13 @@ string SDParam::getKey() const
     return _key;
 }
 
-void SDParam::setValue(std::string value) {
+void SDParam::setValue(std::string value)
+{
     _value = value;
 }
 
-std::string SDParam::getValue() const {
+std::string SDParam::getValue() const
+{
     return _value;
 }
 

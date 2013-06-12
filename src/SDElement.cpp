@@ -105,7 +105,7 @@ SDID SDElement::getSDID() const
     return *_sdID;
 }
 
-void SDElement::setSDParamsString(const string sdParamsString)
+void SDElement::setSDParamsString(string sdParamsString)
 {
     _sdParamsString = sdParamsString;
     return;
