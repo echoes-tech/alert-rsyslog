@@ -222,11 +222,13 @@ void StructuredData::createIVAs(const long long &syslogID, Session &session)
                         continue;
                     }
 
+                    logger.entry("debug") << "[StructuredData] this value is a number ?";
                     if(infPtr->pk.unit->unitType.id() == Enums::NUMBER)
                     {
                         try
                         {
                             boost::lexical_cast<long double>(value);
+                            logger.entry("debug") << "[StructuredData] Yes, this value is a number.";
                         }
                         catch(boost::bad_lexical_cast &)
                         {
@@ -244,6 +246,8 @@ void StructuredData::createIVAs(const long long &syslogID, Session &session)
                             continue;
                         }
                     }
+                    else
+                        logger.entry("debug") << "[StructuredData] No, this value isn't a number.";
 
                     // we check whether we have to calculate something about the information
                     logger.entry("debug") << "[StructuredData] Calculate this INF ?";
@@ -264,25 +268,33 @@ void StructuredData::createIVAs(const long long &syslogID, Session &session)
                         }
                     }
                     else
-                    {
                         logger.entry("debug") << "[StructuredData] No calculation required" ;
-                    }
 
                     //get sent date of the the associated syslog
+                    logger.entry("debug") << "[StructuredData] Set infPtr";
                     informationValueToAdd->information = infPtr;
+                    logger.entry("debug") << "[StructuredData] Set value";
                     informationValueToAdd->value = value;
+                    logger.entry("debug") << "[StructuredData] Set creation date";
                     informationValueToAdd->creationDate = sloPtr->sentDate.addSecs(offset);
+                    logger.entry("debug") << "[StructuredData] Set lot number";
                     informationValueToAdd->lotNumber = lotNumber;
-                    informationValueToAdd->lineNumber = lineNumber;            
+                    logger.entry("debug") << "[StructuredData] Set line number";
+                    informationValueToAdd->lineNumber = lineNumber;    
+                    logger.entry("debug") << "[StructuredData] Set astPtr";
                     informationValueToAdd->asset = astPtr;
+                    logger.entry("debug") << "[StructuredData] Set sloPtr";
                     informationValueToAdd->syslog = sloPtr;
 
-                    if (!calculate.empty())
-                        informationValueToAdd->state = 9;
-                    else
+                    logger.entry("debug") << "[StructuredData] Set state";
+                    if (calculate.empty())
                         informationValueToAdd->state = 0;
+                    else
+                        informationValueToAdd->state = 9;
 
+                    logger.entry("debug") << "[StructuredData] ivaPtr creation";
                     Wt::Dbo::ptr<InformationValue> ivaPtr = session.add<InformationValue>(informationValueToAdd);
+                    logger.entry("debug") << "[StructuredData] ivaPtr flush";
                     ivaPtr.flush();
                     logger.entry("debug") << "[StructuredData] IVA " << ivaPtr.id() << " created";
                 }
