@@ -171,7 +171,9 @@ void StructuredData::createIVAs(const long long &syslogID, Session &session)
 
                     if (!astPtr)
                     {
-                        logger.entry("error") << "[StructuredData] Asset with id : " << idAsset << " doesn't exist." ;
+                        logger.entry("error") << "[StructuredData] Asset with id : " << idAsset << " doesn't exist.";
+                        delete informationValueToAdd;
+                        informationValueToAdd = NULL;
                         isPartial = true;
                         continue;
                     }
@@ -186,11 +188,13 @@ void StructuredData::createIVAs(const long long &syslogID, Session &session)
 
                     if (!seuPtr)
                     {
-                        logger.entry("error") << "[StructuredData] No search unit retrieved for values:" << value
-                                                                 << " seaId: " << idSearch 
-                                                                 << " srcId: " << idSource 
-                                                                 << " plgId: " << idPlugin
-                                                                 << " valueNum: " << valueNum;
+                        logger.entry("error") << "[StructuredData] No search unit retrieved for: "
+                                    << " Plugin ID = " << idPlugin
+                                    << ", Source ID = " << idSource
+                                    << ", Search ID = " << idSearch
+                                    << ", Value Number = " << valueNum;
+                        delete informationValueToAdd;
+                        informationValueToAdd = NULL;
                         isPartial = true;
                         continue;
                     }
@@ -204,11 +208,16 @@ void StructuredData::createIVAs(const long long &syslogID, Session &session)
                             .where("\"INU_ID_INU_ID\" = ?").bind(seuPtr->informationUnit.id())
                             .limit(1);
 
-                    // we check whether we have to calculate something about the information
-                    logger.entry("debug") << "[StructuredData] Calculate this INF ?";
                     if (!infPtr)
                     {
-                        logger.entry("error") << "[StructuredData] No infPtr" ;
+                        logger.entry("error") << "[StructuredData] No information retrieved for: "
+                                << " Plugin ID = " << idPlugin
+                                << ", Source ID = " << idSource
+                                << ", Search ID = " << idSearch
+                                << ", Value Number = " << valueNum
+                                << ", Unit ID = " << seuPtr->informationUnit.id();
+                        delete informationValueToAdd;
+                        informationValueToAdd = NULL;
                         isPartial = true;
                         continue;
                     }
@@ -229,11 +238,15 @@ void StructuredData::createIVAs(const long long &syslogID, Session &session)
                                     << " valueNum : " << valueNum
                                     << " astId: " << idAsset
                                     << " must be a number";
+                            delete informationValueToAdd;
+                            informationValueToAdd = NULL;
                             isPartial = true;
                             continue;
                         }
                     }
 
+                    // we check whether we have to calculate something about the information
+                    logger.entry("debug") << "[StructuredData] Calculate this INF ?";
                     if (infPtr->calculate)
                     {
                         if (!infPtr->calculate.get().empty())
@@ -244,6 +257,8 @@ void StructuredData::createIVAs(const long long &syslogID, Session &session)
                         else
                         {
                             logger.entry("error") << "[StructuredData] No calculation found, should have" ;
+                            delete informationValueToAdd;
+                            informationValueToAdd = NULL;
                             isPartial = true;
                             continue;
                         }
@@ -263,13 +278,9 @@ void StructuredData::createIVAs(const long long &syslogID, Session &session)
                     informationValueToAdd->syslog = sloPtr;
 
                     if (!calculate.empty())
-                    {
                         informationValueToAdd->state = 9;
-                    }   
                     else
-                    {
                         informationValueToAdd->state = 0;
-                    }
 
                     Wt::Dbo::ptr<InformationValue> ivaPtr = session.add<InformationValue>(informationValueToAdd);
                     ivaPtr.flush();
@@ -289,9 +300,7 @@ void StructuredData::createIVAs(const long long &syslogID, Session &session)
             }
         }
         else
-        {
             logger.entry("error") << "[StructuredData] Syslog with id : " << syslogID << " doesn't exist." ;
-        }
         
         transaction.commit();
     }

@@ -19,11 +19,14 @@ SyslogInsert::SyslogInsert(const string &content, Session &session)
 {
     // Retrieve Syslog Insertion given by rsyslog
     setContent(content);
+    setSD("");
 
     if(_content.compare(""))
     {
-        detectSD();
-        sqlInsert(session);
+        if(detectSD())
+        {
+            sqlInsert(session);
+        }
     }
     else
         logger.entry("error") << "[SyslogInsert] Content is empty";
@@ -52,8 +55,9 @@ string SyslogInsert::getContent() const
     return _content;
 }
 
-void SyslogInsert::detectSD()
+bool SyslogInsert::detectSD()
 {
+    bool res = false;
     if(_content.compare(""))
     {
         // TODO: renforcer la regex en détectant l'ensemble de l'insertion
@@ -64,6 +68,7 @@ void SyslogInsert::detectSD()
         {
             if (what.size() == 2) {
                 setSD(what[1]);
+                res = true;
             }
             else
             {
@@ -80,7 +85,7 @@ void SyslogInsert::detectSD()
         logger.entry("error") << "[SyslogInsert] No Structured Data is set";
     }
 
-    return;
+    return res;
 }
 
 void SyslogInsert::setSD(string sd) {

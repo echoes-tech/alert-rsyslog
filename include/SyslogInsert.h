@@ -37,7 +37,12 @@ class SyslogInsert {
         long long _id;
 
         void setContent(std::string input);
-        void detectSD();
+        /**
+         * Detects the Structured-Data on standard input
+         * @param Input
+         * @return true if SD detected or false if not
+         */
+        bool detectSD();
         void setSD(std::string _sd);
         void setID(long long id);
         void sqlInsert(Session &session);
