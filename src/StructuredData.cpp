@@ -164,6 +164,14 @@ void StructuredData::createIVAs(const long long &syslogID, Session &session)
 
                     value = Wt::Utils::base64Decode(_sdElementsRes[i].getSDParamsRes()[j].getValue());
 
+                    logger.entry("debug")
+                            << "[StructuredData] Values:" << value
+                            << " (Plugin ID = " << idPlugin
+                            << ", Source ID = " << idSource
+                            << ", Search ID = " << idSearch
+                            << ", Value Number = " << valueNum
+                            << ", Asset ID = " << idAsset << ")";
+
                     // we have to check wether the asset exists or not (been deleted ?)
                     Wt::Dbo::ptr<Asset> astPtr = session.find<Asset>()
                             .where("\"AST_ID\" = ?").bind(idAsset)
