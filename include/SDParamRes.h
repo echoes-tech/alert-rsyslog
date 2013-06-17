@@ -20,26 +20,28 @@ class SDParamRes : public SDParam {
     public:
         SDParamRes(const SDParam& sdParam);
         SDParamRes(const SDParamRes& orig);
+        virtual ~SDParamRes();
+
         long long getIDPlugin() const;
         long long getIDAsset() const;
         long long getIDSource() const;
         long long getIDSearch() const;
-        unsigned getValueNum() const;        
+        int getValueNum() const;        
         unsigned getLotNumber() const;
         unsigned getLineNumber() const;
-        virtual ~SDParamRes();
 
     private:
         long long _idPlugin, _idAsset, _idSource, _idSearch;
-        unsigned _valueNum, _lotNumber, _lineNumber;
+        int _valueNum;
+        unsigned _lotNumber, _lineNumber;
 
-        void setIDPlugin(long long _idPlugin);
-        void setIDAsset(long long _idAsset);
-        void setIDSource(long long _idSource);
-        void setIDSearch(long long _idSearch);
-        void setValueNum(unsigned _valueNum);
-        void setLotNumber(unsigned _lotNumber);
-        void setLineNumber(unsigned _lineNumber);
+        void setIDPlugin(long long idPlugin);
+        void setIDAsset(long long idAsset);
+        void setIDSource(long long idSource);
+        void setIDSearch(long long idSearch);
+        void setValueNum(int valueNum);
+        void setLotNumber(unsigned lotNumber);
+        void setLineNumber(unsigned lineNumber);
 };
 
 #endif	/* SDPARAMRES_H */

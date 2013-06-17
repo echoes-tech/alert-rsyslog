@@ -15,7 +15,8 @@
 
 using namespace std;
 
-SDParam::SDParam(const string &content) {
+SDParam::SDParam(const string &content)
+{
     setContent(content);
     setKey("");
     setValue("");     
@@ -26,10 +27,15 @@ SDParam::SDParam(const string &content) {
         logger.entry("error") << "[SDParam] Content is empty";
 }
 
-SDParam::SDParam(const SDParam& orig) {
+SDParam::SDParam(const SDParam& orig)
+{
     setContent(orig.getContent());
     setKey(orig.getKey());
     setValue(orig.getValue());
+}
+
+SDParam::~SDParam()
+{
 }
 
 void SDParam::setContent(string content)
@@ -87,8 +93,5 @@ void SDParam::setValue(std::string value)
 std::string SDParam::getValue() const
 {
     return _value;
-}
-
-SDParam::~SDParam() {
 }
 

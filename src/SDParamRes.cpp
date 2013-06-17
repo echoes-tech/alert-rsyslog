@@ -27,12 +27,12 @@ SDParamRes::SDParamRes(const SDParam& sdParam) : SDParam(sdParam)
         setIDSource(boost::lexical_cast<long long>(sIDs[2]));
         setIDSearch(boost::lexical_cast<long long>(sIDs[3]));
         setValueNum(boost::lexical_cast<int>(sIDs[4]));
-        setLotNumber(boost::lexical_cast<int>(sIDs[5]));
-        setLineNumber(boost::lexical_cast<int>(sIDs[6]));
+        setLotNumber(boost::lexical_cast<unsigned>(sIDs[5]));
+        setLineNumber(boost::lexical_cast<unsigned>(sIDs[6]));
     }
     catch (boost::bad_lexical_cast &)
     {
-        logger.entry("error") << "[SDParamRes] IDs is not an unsigned on SD-Element Res";
+        logger.entry("error") << "[SDParamRes] All IDs are not the right type on SD-Element Res";
     }
 }
 
@@ -45,6 +45,10 @@ SDParamRes::SDParamRes(const SDParamRes& orig) : SDParam(orig)
     setValueNum(orig.getValueNum());
     setLotNumber(orig.getLotNumber());
     setLineNumber(orig.getLineNumber());
+}
+
+SDParamRes::~SDParamRes()
+{
 }
 
 void SDParamRes::setIDPlugin(long long idPlugin)
@@ -95,14 +99,14 @@ long long SDParamRes::getIDSearch() const
     return _idSearch;
 }
 
-void SDParamRes::setValueNum(unsigned valueNum)
+void SDParamRes::setValueNum(int valueNum)
 {
     _valueNum = valueNum;
 
     return;
 }
 
-unsigned SDParamRes::getValueNum() const
+int SDParamRes::getValueNum() const
 {
     return _valueNum;
 }
@@ -129,9 +133,5 @@ void SDParamRes::setLineNumber(unsigned lineNumber)
 unsigned SDParamRes::getLineNumber() const
 {
     return _lineNumber;
-}
-
-SDParamRes::~SDParamRes()
-{
 }
 

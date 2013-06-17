@@ -37,7 +37,7 @@ void SDElementProp::detectPropKeys(Session &session)
 {
     for (unsigned i(0); i < _sdParams.size(); ++i)
     {
-        if (boost::equals(_sdParams[i].getKey(), "ver"))
+        if (!_sdParams[i].getKey().compare("ver"))
         {
             try
             {
@@ -48,11 +48,11 @@ void SDElementProp::detectPropKeys(Session &session)
                 logger.entry("error") << "[SDElementProp] Version is not an unsigned on SD-Element Prop";
             }
         }
-        else if (boost::equals(_sdParams[i].getKey(), "probe"))
+        else if (!_sdParams[i].getKey().compare("probe"))
         {
             try
             {
-                setProbeID(boost::lexical_cast<unsigned>(_sdParams[i].getValue()));
+                setProbeID(boost::lexical_cast<long long>(_sdParams[i].getValue()));
                 findProbeWtDBOPtr(session, _probeID);
             }
             catch (boost::bad_lexical_cast &)
@@ -60,7 +60,7 @@ void SDElementProp::detectPropKeys(Session &session)
                 logger.entry("error") << "[SDElement] Probe ID is not an unsigned on SD-Element Prop";
             }
         }
-        else if (boost::equals(_sdParams[i].getKey(), "token"))
+        else if (!_sdParams[i].getKey().compare("token"))
         {
             setToken(_sdParams[i].getValue());
         }
@@ -118,24 +118,24 @@ unsigned SDElementProp::getVersion() const
     return _version;
 }
 
-void SDElementProp::setProbeID(unsigned probeID)
+void SDElementProp::setProbeID(long long probeID)
 {
     _probeID = probeID;
 
     return;
 }
 
-unsigned SDElementProp::getProbeID() const
+long long SDElementProp::getProbeID() const
 {
     return _probeID;
 }
 
-void SDElementProp::findProbeWtDBOPtr(Session &session, unsigned probeID)
+void SDElementProp::findProbeWtDBOPtr(Session &session, long long probeID)
 {
     try
     {
         Wt::Dbo::Transaction transaction(session);
-        setProbeWtDBOPtr(session.find<Probe>().where("\"PRB_ID\" = ?").bind(boost::lexical_cast<string>(probeID)).limit(1));
+        setProbeWtDBOPtr(session.find<Probe>().where("\"PRB_ID\" = ?").bind(probeID).limit(1));
         transaction.commit();
     }
     catch (Wt::Dbo::Exception e)
@@ -162,7 +162,7 @@ void SDElementProp::updateSyslog(long long syslogID, Session &session)
     try 
     {
         Wt::Dbo::Transaction transaction(session);
-        Wt::Dbo::ptr<Syslog> syslogPtr = session.find<Syslog>().where("\"SLO_ID\" = ?").bind(boost::lexical_cast<string>(syslogID)).limit(1);
+        Wt::Dbo::ptr<Syslog> syslogPtr = session.find<Syslog>().where("\"SLO_ID\" = ?").bind(syslogID).limit(1);
         
         if(isValidToken(session))
         {

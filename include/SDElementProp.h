@@ -26,21 +26,22 @@ class SDElementProp : public SDElement
 
         std::string getToken() const;
         bool isValidToken(Session &session) const;
-        unsigned getProbeID() const;
+        long long getProbeID() const;
         unsigned getVersion() const;
         Wt::Dbo::ptr<Probe> getProbeWtDBOPtr() const;
 
     private:
-        unsigned _probeID, _version;
+        unsigned _version;
+        long long _probeID;
         std::string _token;
         Wt::Dbo::ptr<Probe> _probeWtDBOPtr;
 
         void detectPropKeys(Session &session);
         void setToken(std::string token);
-        void setProbeID(unsigned probeID);
+        void setProbeID(long long probeID);
         void setVersion(unsigned version);
-        void findProbeWtDBOPtr(Session &session, unsigned probeID);
-        void setProbeWtDBOPtr(Wt::Dbo::ptr<Probe>  probeWtDBOPtr);
+        void findProbeWtDBOPtr(Session &session, long long probeID);
+        void setProbeWtDBOPtr(Wt::Dbo::ptr<Probe> probeWtDBOPtr);
         void updateSyslog(long long syslogID, Session &session);
 };
 

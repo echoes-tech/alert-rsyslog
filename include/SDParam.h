@@ -27,10 +27,11 @@ class SDParam {
     public:
         SDParam(const std::string &content);
         SDParam(const SDParam& orig);
+        virtual ~SDParam();
+
         std::string getContent() const;
         std::string getKey() const;
         std::string getValue() const;
-        virtual ~SDParam();
 
     protected:
         std::string _content, _key, _value;
