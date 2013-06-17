@@ -80,13 +80,9 @@ void StructuredData::splitSDElements(const long long &syslogID, Session &session
         SDElement sdElement(sSDElements[i]);
 
         if(!sdElement.getSDID().getName().compare("prop"))
-        {
             setSDElementProp(SDElementProp(sSDElements[i], syslogID, session));
-        }
         else
-        {
             addSDElementRes(SDElementRes(sSDElements[i]));
-        }
     }
 
     return;
@@ -134,23 +130,23 @@ void StructuredData::createIVAs(const long long &syslogID, Session &session)
         {
             sloPtr.modify()->state = 1;
             sloPtr.flush();
-            Wt::WDateTime sendDate = sloPtr->sentDate;
+            const Wt::WDateTime sendDate = sloPtr->sentDate;
 
             for (unsigned i(0); i < _sdElementsRes.size(); ++i)
             {
-                Wt::WDateTime creationDate = sendDate.addSecs(_sdElementsRes[i].getOffset());
-                vector<SDParamRes> sdParamsRes = _sdElementsRes[i].getSDParamsRes();
+                const Wt::WDateTime creationDate = sendDate.addSecs(_sdElementsRes[i].getOffset());
+                const vector<SDParamRes> sdParamsRes = _sdElementsRes[i].getSDParamsRes();
 
                 for (unsigned j(0); j < sdParamsRes.size() ; ++j)
                 {   
                     InformationValue *informationValueToAdd = new InformationValue();
-                    long long idAsset = sdParamsRes[j].getIDAsset();
-                    long long idPlugin = sdParamsRes[j].getIDPlugin();
-                    long long idSource = sdParamsRes[j].getIDSource();
-                    long long idSearch = sdParamsRes[j].getIDSearch();
-                    int valueNum = sdParamsRes[j].getValueNum();
+                    const long long idAsset = sdParamsRes[j].getIDAsset();
+                    const long long idPlugin = sdParamsRes[j].getIDPlugin();
+                    const long long idSource = sdParamsRes[j].getIDSource();
+                    const long long idSearch = sdParamsRes[j].getIDSearch();
+                    const int valueNum = sdParamsRes[j].getValueNum();
 
-                    string value = Wt::Utils::base64Decode(sdParamsRes[j].getValue());
+                    const string value = Wt::Utils::base64Decode(sdParamsRes[j].getValue());
 
                     informationValueToAdd->lotNumber = sdParamsRes[j].getLotNumber();
                     informationValueToAdd->lineNumber = sdParamsRes[j].getLineNumber();

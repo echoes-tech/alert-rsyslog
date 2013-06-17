@@ -40,9 +40,9 @@ class SDElementProp : public SDElement
         void setToken(std::string token);
         void setProbeID(long long probeID);
         void setVersion(unsigned version);
-        void findProbeWtDBOPtr(Session &session, long long probeID);
+        void findProbeWtDBOPtr(const long long probeID, Session &session);
         void setProbeWtDBOPtr(Wt::Dbo::ptr<Probe> probeWtDBOPtr);
-        void updateSyslog(long long syslogID, Session &session);
+        void updateSyslog(const long long syslogID, Session &session);
 };
 
 #endif	/* SDELEMENTPROP_H */

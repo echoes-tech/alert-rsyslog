@@ -53,7 +53,7 @@ void SDElementProp::detectPropKeys(Session &session)
             try
             {
                 setProbeID(boost::lexical_cast<long long>(_sdParams[i].getValue()));
-                findProbeWtDBOPtr(session, _probeID);
+                findProbeWtDBOPtr(_probeID, session);
             }
             catch (boost::bad_lexical_cast &)
             {
@@ -61,9 +61,7 @@ void SDElementProp::detectPropKeys(Session &session)
             }
         }
         else if (!_sdParams[i].getKey().compare("token"))
-        {
             setToken(_sdParams[i].getValue());
-        }
     }
 
     return;
@@ -88,12 +86,13 @@ bool SDElementProp::isValidToken(Session &session) const
     if(_probeWtDBOPtr)
     {
         try
-        {   
+        {
             Wt::Dbo::Transaction transaction(session);
             if (_token.compare(_probeWtDBOPtr->organization->token.toUTF8()))
                 logger.entry("error") << "[SDElementProp] Token not matching organization token.";
             else
                 res = true;
+            transaction.commit();
         }
         catch (Wt::Dbo::Exception e)
         {
@@ -130,7 +129,7 @@ long long SDElementProp::getProbeID() const
     return _probeID;
 }
 
-void SDElementProp::findProbeWtDBOPtr(Session &session, long long probeID)
+void SDElementProp::findProbeWtDBOPtr(const long long probeID, Session &session)
 {
     try
     {
@@ -157,7 +156,7 @@ Wt::Dbo::ptr<Probe> SDElementProp::getProbeWtDBOPtr() const
     return _probeWtDBOPtr;
 }
 
-void SDElementProp::updateSyslog(long long syslogID, Session &session)
+void SDElementProp::updateSyslog(const long long syslogID, Session &session)
 {
     try
     {

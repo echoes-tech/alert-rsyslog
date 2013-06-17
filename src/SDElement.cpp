@@ -23,9 +23,7 @@ SDElement::SDElement(const string &content)
     {
         detectSDID();
         if (_sdParamsString.compare(""))
-        {
             splitSDParams();
-        }
     }
     else
         logger.entry("error") << "[SDElement] Content is empty";
@@ -113,12 +111,11 @@ string SDElement::getSDParamsString() const
 
 void SDElement::splitSDParams()
 {
-    string sdParamsTmp(_sdParamsString);
     vector<string> sSDParams;
 
     // offset=2 4-1-3-4-1-1-1="U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE" 4-1-3-4-2-1-1="U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE"
 
-    boost::split(sSDParams, sdParamsTmp, boost::is_any_of(" "), boost::token_compress_on);
+    boost::split(sSDParams, _sdParamsString, boost::is_any_of(" "), boost::token_compress_on);
     // offset=2
     // 4-1-3-4-1-1-1="U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE"
     // 4-1-3-4-2-1-1="U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE"
