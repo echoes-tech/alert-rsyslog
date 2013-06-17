@@ -19,25 +19,19 @@ StructuredData::StructuredData(const string &content, const long long &syslogID,
 {
     setContent(content);
 
-    if(_content.compare(""))
+    if (_content.compare(""))
     {
         splitSDElements(syslogID, session);
-        if(_sdElementProp)
+        if (_sdElementProp)
         {
-            if(_sdElementProp->getProbeWtDBOPtr().id() > 0 && _sdElementProp->isValidToken(session))
-            {
+            if (_sdElementProp->getProbeWtDBOPtr().id() > 0 && _sdElementProp->isValidToken(session))
                 createIVAs(syslogID, session);
-            }
         }
         else
-        {
             logger.entry("error") << "[StructuredData] SD Element Prop is empty";
-        }
     }
     else
-    {
         logger.entry("error") << "[StructuredData] Content is empty";
-    }
 }
 
 StructuredData::StructuredData(const StructuredData& orig)
@@ -145,20 +139,21 @@ void StructuredData::createIVAs(const long long &syslogID, Session &session)
             for (unsigned i(0); i < _sdElementsRes.size(); ++i)
             {
                 Wt::WDateTime creationDate = sendDate.addSecs(_sdElementsRes[i].getOffset());
+                vector<SDParamRes> sdParamsRes = _sdElementsRes[i].getSDParamsRes();
 
-                for (unsigned j(0); j < _sdElementsRes[i].getSDParamsRes().size() ; ++j)
-                {
+                for (unsigned j(0); j < sdParamsRes.size() ; ++j)
+                {   
                     InformationValue *informationValueToAdd = new InformationValue();
-                    long long idAsset = _sdElementsRes[i].getSDParamsRes()[j].getIDAsset();
-                    long long idPlugin = _sdElementsRes[i].getSDParamsRes()[j].getIDPlugin();
-                    long long idSource = _sdElementsRes[i].getSDParamsRes()[j].getIDSource();
-                    long long idSearch = _sdElementsRes[i].getSDParamsRes()[j].getIDSearch();
-                    int valueNum = _sdElementsRes[i].getSDParamsRes()[j].getValueNum();
+                    long long idAsset = sdParamsRes[j].getIDAsset();
+                    long long idPlugin = sdParamsRes[j].getIDPlugin();
+                    long long idSource = sdParamsRes[j].getIDSource();
+                    long long idSearch = sdParamsRes[j].getIDSearch();
+                    int valueNum = sdParamsRes[j].getValueNum();
 
-                    string value = Wt::Utils::base64Decode(_sdElementsRes[i].getSDParamsRes()[j].getValue());
+                    string value = Wt::Utils::base64Decode(sdParamsRes[j].getValue());
 
-                    informationValueToAdd->lotNumber = _sdElementsRes[i].getSDParamsRes()[j].getLotNumber();
-                    informationValueToAdd->lineNumber = _sdElementsRes[i].getSDParamsRes()[j].getLineNumber();
+                    informationValueToAdd->lotNumber = sdParamsRes[j].getLotNumber();
+                    informationValueToAdd->lineNumber = sdParamsRes[j].getLineNumber();
 
                     // we have to check wether the asset exists or not (been deleted ?)
                     Wt::Dbo::ptr<Asset> astPtr = session.find<Asset>()
@@ -220,32 +215,32 @@ void StructuredData::createIVAs(const long long &syslogID, Session &session)
                     }
 
                     // Désactiver temporairement car ça segfault dès que la réception dépasse une certaine vitesse
-//                    logger.entry("debug") << "[StructuredData] This value is a number ?";
-//                    if(infPtr->pk.unit->unitType.id() == Enums::NUMBER)
-//                    {
-//                        try
-//                        {
-//                            boost::lexical_cast<long double>(value);
-//                            logger.entry("debug") << "[StructuredData] Yes, this value is a number.";
-//                        }
-//                        catch(boost::bad_lexical_cast &)
-//                        {
-//                            logger.entry("error")
-//                                    << "[StructuredData] Values :" << value
-//                                    << " seaId : " << idSearch
-//                                    << " srcId : " << idSource
-//                                    << " plgId : " << idPlugin
-//                                    << " valueNum : " << valueNum
-//                                    << " astId: " << idAsset
-//                                    << " must be a number";
-//                            delete informationValueToAdd;
-//                            informationValueToAdd = NULL;
-//                            isPartial = true;
-//                            continue;
-//                        }
-//                    }
-//                    else
-//                        logger.entry("debug") << "[StructuredData] No, this value isn't a number.";
+                    logger.entry("debug") << "[StructuredData] This value is a number ?";
+                    if(infPtr->pk.unit->unitType.id() == Enums::NUMBER)
+                    {
+                        try
+                        {
+                            boost::lexical_cast<long double>(value);
+                            logger.entry("debug") << "[StructuredData] Yes, this value is a number.";
+                        }
+                        catch(boost::bad_lexical_cast &)
+                        {
+                            logger.entry("error")
+                                    << "[StructuredData] Values :" << value
+                                    << " seaId : " << idSearch
+                                    << " srcId : " << idSource
+                                    << " plgId : " << idPlugin
+                                    << " valueNum : " << valueNum
+                                    << " astId: " << idAsset
+                                    << " must be a number";
+                            delete informationValueToAdd;
+                            informationValueToAdd = NULL;
+                            isPartial = true;
+                            continue;
+                        }
+                    }
+                    else
+                        logger.entry("debug") << "[StructuredData] No, this value isn't a number.";
 
                     // we check whether we have to calculate something about the information
                     logger.entry("debug") << "[StructuredData] Calculate this INF ?";
@@ -255,11 +250,11 @@ void StructuredData::createIVAs(const long long &syslogID, Session &session)
                         if (!infPtr->calculate.get().empty())
                         {
                             calculate = infPtr->calculate.get();
-                            logger.entry("debug") << "[StructuredData] Calculation found: " << calculate ;
+                            logger.entry("debug") << "[StructuredData] Calculation found: " << calculate;
                         }
                         else
                         {
-                            logger.entry("error") << "[StructuredData] No calculation found, should have" ;
+                            logger.entry("error") << "[StructuredData] No calculation found, should have";
                             delete informationValueToAdd;
                             informationValueToAdd = NULL;
                             isPartial = true;
@@ -267,7 +262,7 @@ void StructuredData::createIVAs(const long long &syslogID, Session &session)
                         }
                     }
                     else
-                        logger.entry("debug") << "[StructuredData] No calculation required" ;
+                        logger.entry("debug") << "[StructuredData] No calculation required";
 
                     informationValueToAdd->information = infPtr;
                     informationValueToAdd->value = value;
@@ -288,7 +283,7 @@ void StructuredData::createIVAs(const long long &syslogID, Session &session)
             }
 
             if (isPartial)
-            {
+            {   
                 logger.entry("info") << "[StructuredData] SLO " << syslogID << " partially converted into IVA";
                 sloPtr.modify()->state = 3;
             }
@@ -299,7 +294,7 @@ void StructuredData::createIVAs(const long long &syslogID, Session &session)
             }
         }
         else
-            logger.entry("error") << "[StructuredData] Syslog with id : " << syslogID << " doesn't exist." ;
+            logger.entry("error") << "[StructuredData] Syslog with id : " << syslogID << " doesn't exist.";
         
         transaction.commit();
     }

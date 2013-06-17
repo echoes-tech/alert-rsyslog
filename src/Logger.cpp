@@ -23,7 +23,7 @@ Logger::Logger() : Wt::WLogger()
     addField("type", false);
     addField("message", false);
 #ifdef NDEBUG
-   setFile("/var/log/echoes-alert/parser.log");
+    setFile("/var/log/echoes-alert/parser.log");
 #endif
 }
 
@@ -60,7 +60,7 @@ void Logger::setType(unsigned short type)
             break;
         default:
             logger.configure("* -debug");
-            break;            
+            break;
       }
 
     return;

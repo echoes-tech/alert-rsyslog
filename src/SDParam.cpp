@@ -19,9 +19,9 @@ SDParam::SDParam(const string &content)
 {
     setContent(content);
     setKey("");
-    setValue("");     
+    setValue("");
 
-    if(_content.compare(""))
+    if (_content.compare(""))
         splitKeyValue();
     else
         logger.entry("error") << "[SDParam] Content is empty";
@@ -53,7 +53,7 @@ string SDParam::getContent() const
 void SDParam::splitKeyValue()
 {
     string valueTmp;
-    
+
     // Example : 4-1-3-4-1-1-1="U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE"
 
     unsigned pos = _content.find_first_of('=');

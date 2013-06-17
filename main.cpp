@@ -30,8 +30,7 @@ boost::mutex SessionPool::mutex;
  */
 int main(int argc, char** argv) {
     int res = EXIT_FAILURE;
-    string input = "";
-    
+
     logger.entry("info") << "[origin enterpriseId=\"40311\" software=\"" << SOFTWARE_NAME << "\" swVersion=\"" << SOFTWARE_VERSION << "\"] (re)start";
 
     // Loading conf
@@ -39,12 +38,14 @@ int main(int argc, char** argv) {
     logger.setType(conf.getCriticity());
     if (conf.getDBPort() != 0)
     {
+        string input = "";
+
         // Setting the session
         Session session(conf.getSessConnectParams());
 
         while (!getline(cin, input).eof())
         {
-            if(input.compare(""))
+            if (input.compare(""))
             {
                 // Processing the Syslog Insertion and detection Structured Data
                 SyslogInsert syslogInsert(input, session);
@@ -57,6 +58,8 @@ int main(int argc, char** argv) {
 
         res = EXIT_SUCCESS;
     }
+    else
+        logger.entry("fatal") << "[Main] The database port mustn't be 0";
 
     logger.entry("info") << "[origin enterpriseId=\"40311\" software=\"" << SOFTWARE_NAME << "\" swVersion=\"" << SOFTWARE_VERSION << "\"] stop";
 

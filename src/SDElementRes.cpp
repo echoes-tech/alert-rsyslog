@@ -32,10 +32,10 @@ SDElementRes::~SDElementRes()
 }
 
 void SDElementRes::detectResKeys()
-{   
+{
     for (unsigned i(0); i < _sdParams.size(); ++i)
     {
-        if(!_sdParams[i].getKey().compare("offset"))
+        if (!_sdParams[i].getKey().compare("offset"))
         {
             try
             {

@@ -34,7 +34,7 @@ class SDElement {
         std::string _content, _sdParamsString;
         boost::optional<SDID> _sdID;
         std::vector<SDParam> _sdParams;
-        
+
         void setContent(std::string content);
         void detectSDID();
         void setSDID(SDID sdID);

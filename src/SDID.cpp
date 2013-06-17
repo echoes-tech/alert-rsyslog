@@ -15,14 +15,19 @@
 
 using namespace std;
 
-SDID::SDID(const string &name, const unsigned &privateEntrepriseNumber) {
+SDID::SDID(const string &name, const unsigned &privateEntrepriseNumber)
+{
     setName(name);
     setPrivateEntrepriseNumber(privateEntrepriseNumber);
 }
 
-SDID::SDID(const SDID& orig) {
+SDID::SDID(const SDID& orig)
+{
     setName(orig.getName());
     setPrivateEntrepriseNumber(orig.getPrivateEntrepriseNumber());
+}
+
+SDID::~SDID() {
 }
 
 void SDID::setName(string name)
@@ -30,7 +35,7 @@ void SDID::setName(string name)
     _name = name;
     return;
 }
- 
+
 string SDID::getName() const
 {
     return _name;
@@ -41,13 +46,9 @@ void SDID::setPrivateEntrepriseNumber(unsigned privateEntrepriseNumber)
     _privateEntrepriseNumber = privateEntrepriseNumber;
     return;
 }
- 
+
 unsigned SDID::getPrivateEntrepriseNumber() const
 {
     return _privateEntrepriseNumber;
-}
-
-
-SDID::~SDID() {
 }
 

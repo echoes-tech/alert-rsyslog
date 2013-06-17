@@ -28,7 +28,7 @@ SDElementProp::SDElementProp(const SDElementProp& orig) : SDElement(orig)
     setToken(orig.getToken());
     setVersion(orig.getVersion());
 }
-    
+
 SDElementProp::~SDElementProp()
 {
 }
@@ -97,7 +97,7 @@ bool SDElementProp::isValidToken(Session &session) const
         }
         catch (Wt::Dbo::Exception e)
         {
-            logger.entry("error") << "[SDElementProp] " << e.what() ;
+            logger.entry("error") << "[SDElementProp] " << e.what();
         }
     }
     else
@@ -159,12 +159,12 @@ Wt::Dbo::ptr<Probe> SDElementProp::getProbeWtDBOPtr() const
 
 void SDElementProp::updateSyslog(long long syslogID, Session &session)
 {
-    try 
+    try
     {
         Wt::Dbo::Transaction transaction(session);
         Wt::Dbo::ptr<Syslog> syslogPtr = session.find<Syslog>().where("\"SLO_ID\" = ?").bind(syslogID).limit(1);
-        
-        if(isValidToken(session))
+
+        if (isValidToken(session))
         {
             syslogPtr.modify()->version = _version;
             syslogPtr.modify()->probe = _probeWtDBOPtr;
@@ -178,6 +178,5 @@ void SDElementProp::updateSyslog(long long syslogID, Session &session)
     {
         logger.entry("error") << "[SDElementProp] " << e.what();           
     }
-
 }
 

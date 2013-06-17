@@ -24,9 +24,7 @@ SyslogInsert::SyslogInsert(const string &content, Session &session)
     if(_content.compare(""))
     {
         if(detectSD())
-        {
             sqlInsert(session);
-        }
     }
     else
         logger.entry("error") << "[SyslogInsert] Content is empty";
@@ -58,32 +56,27 @@ string SyslogInsert::getContent() const
 bool SyslogInsert::detectSD()
 {
     bool res = false;
-    if(_content.compare(""))
+    if (_content.compare(""))
     {
-        // TODO: renforcer la regex en détectant l'ensemble de l'insertion
+        // TODO(FPO): renforcer la regex en détectant l'ensemble de l'insertion
         boost::regex e(".*', '(\\[.+\\])', '.*");
         boost::smatch what;
 
         if (boost::regex_match(_content, what, e, boost::match_extra))
         {
-            if (what.size() == 2) {
+            if (what.size() == 2)
+            {
                 setSD(what[1]);
                 res = true;
             }
             else
-            {
                 logger.entry("error") << "[SyslogInsert] Bad number of Structured Data";
-            }
         }
         else
-        {
             logger.entry("error") << "[SyslogInsert] No Structured Data found";
-        }
     }
     else
-    {
         logger.entry("error") << "[SyslogInsert] No Structured Data is set";
-    }
 
     return res;
 }
@@ -113,7 +106,7 @@ void SyslogInsert::sqlInsert(Session &session)
     try
     {
         Wt::Dbo::Transaction transaction(session);
-        
+
         session.execute("INSERT INTO \"T_SYSLOG_SLO\"\n"
 "  (\n"
 "    version,\n"
@@ -137,7 +130,7 @@ void SyslogInsert::sqlInsert(Session &session)
     {
         logger.entry("error") << "[SyslogInsert] " << e.what();
     }
-    
+
     return;
 }
 

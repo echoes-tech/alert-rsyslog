@@ -20,9 +20,10 @@ class SDID {
     public:
         SDID(const std::string &name, const unsigned &privateEntrepriseNumber);
         SDID(const SDID& orig);
+        virtual ~SDID();
+
         std::string getName() const;
         unsigned getPrivateEntrepriseNumber() const;
-        virtual ~SDID();
 
     private:
         std::string _name;

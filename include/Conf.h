@@ -35,22 +35,22 @@ class Conf {
         unsigned short getCriticity() const;
 
     protected:
-        std::string _dBhost, _dBname, _dBuser, _dBpassword, _sessConnectParams;
-        unsigned _dBport;
+        std::string _dbHost, _dbName, _dbUser, _dbPassword, _sessConnectParams;
+        unsigned _dbPort;
         unsigned short _criticity;
 
-        void setDBport(unsigned _dBport);
-        void setDBpassword(std::string dBpassword);
-        void setDBuser(std::string dBuser);
-        void setDBname(std::string dBname);
-        void setDBhost(std::string dBhost);
+        void setDBport(unsigned dbPort);
+        void setDBpassword(std::string dbPassword);
+        void setDBuser(std::string dbUser);
+        void setDBname(std::string dbName);
+        void setDBhost(std::string dbHost);
         void setSessConnectParams
         (
-                std::string dBhost,
-                unsigned dBport,
-                std::string dBname,
-                std::string dBuser,
-                std::string dBpassword
+                std::string dbHost,
+                unsigned dbPport,
+                std::string dbName,
+                std::string dbUser,
+                std::string dbPassword
         );
         void setCriticity(unsigned short criticity);
 };

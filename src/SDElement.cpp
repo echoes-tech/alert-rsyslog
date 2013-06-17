@@ -19,10 +19,10 @@ SDElement::SDElement(const string &content)
 {
     setContent(content);
 
-    if(_content.compare(""))
+    if (_content.compare(""))
     {
         detectSDID();
-        if(_sdParamsString.compare(""))
+        if (_sdParamsString.compare(""))
         {
             splitSDParams();
         }
@@ -57,14 +57,15 @@ string SDElement::getContent() const
 
 void SDElement::detectSDID()
 {
-    if(_content.compare(""))
+    if (_content.compare(""))
     {
         boost::regex e("^(\\w+)@(\\d+) (.*)");
         boost::smatch what;
 
         if (boost::regex_match(_content, what, e, boost::match_extra))
         {
-            if (what.size() == 4) {
+            if (what.size() == 4)
+            {
                 try
                 {
                     setSDID(SDID(what[1], boost::lexical_cast<unsigned>(what[2])));
@@ -76,19 +77,13 @@ void SDElement::detectSDID()
                 setSDParamsString(what[3]);
             }
             else
-            {
                 logger.entry("error") << "[SDElement] Bad number of elements on SD-Element Prop";
-            }
         }
         else
-        {
             logger.entry("error") << "[SDElement] No Match found";
-        }
     }
     else
-    {
         logger.entry("error") << "[SDElement] No SD-Element Prop found";
-    }
 
     return;
 }
@@ -120,19 +115,19 @@ void SDElement::splitSDParams()
 {
     string sdParamsTmp(_sdParamsString);
     vector<string> sSDParams;
-    
-    //offset=2 4-1-3-4-1-1-1="U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE" 4-1-3-4-2-1-1="U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE"
+
+    // offset=2 4-1-3-4-1-1-1="U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE" 4-1-3-4-2-1-1="U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE"
 
     boost::split(sSDParams, sdParamsTmp, boost::is_any_of(" "), boost::token_compress_on);
-    //offset=2
-    //4-1-3-4-1-1-1="U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE"
-    //4-1-3-4-2-1-1="U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE"
+    // offset=2
+    // 4-1-3-4-1-1-1="U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE"
+    // 4-1-3-4-2-1-1="U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE"
 
     for (unsigned i(0); i < sSDParams.size(); ++i)
     {
         addSDParam(SDParam(sSDParams[i]));
     }
-    
+
     return;
 }
 
