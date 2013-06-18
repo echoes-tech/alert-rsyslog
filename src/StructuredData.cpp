@@ -210,8 +210,6 @@ void StructuredData::createIVAs(const long long &syslogID, Session &session)
                         continue;
                     }
 
-                    infPtr.reread();
-
                     logger.entry("debug") << "[StructuredData] This value is a number ?";
                     if (infPtr->pk.unit->unitType.id() == Enums::NUMBER)
                     {
