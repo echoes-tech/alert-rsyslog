@@ -85,7 +85,7 @@ string SDParam::getKey() const
     return _key;
 }
 
-void SDParam::setValue(std::string value)
+void SDParam::setValue(string value)
 {
     _value = value;
 }

@@ -138,7 +138,7 @@ void StructuredData::createIVAs(const long long &syslogID, Session &session)
                 const vector<SDParamRes> sdParamsRes = _sdElementsRes[i].getSDParamsRes();
 
                 for (unsigned j(0); j < sdParamsRes.size() ; ++j)
-                {   
+                {
                     InformationValue *informationValueToAdd = new InformationValue();
                     const long long idAsset = sdParamsRes[j].getIDAsset();
                     const long long idPlugin = sdParamsRes[j].getIDPlugin();
@@ -210,9 +210,10 @@ void StructuredData::createIVAs(const long long &syslogID, Session &session)
                         continue;
                     }
 
-                    // Désactiver temporairement car ça segfault dès que la réception dépasse une certaine vitesse
+                    infPtr.reread();
+
                     logger.entry("debug") << "[StructuredData] This value is a number ?";
-                    if(infPtr->pk.unit->unitType.id() == Enums::NUMBER)
+                    if (infPtr->pk.unit->unitType.id() == Enums::NUMBER)
                     {
                         try
                         {
@@ -291,7 +292,7 @@ void StructuredData::createIVAs(const long long &syslogID, Session &session)
         }
         else
             logger.entry("error") << "[StructuredData] Syslog with id : " << syslogID << " doesn't exist.";
-        
+
         transaction.commit();
     }
     catch (Wt::Dbo::Exception e)
