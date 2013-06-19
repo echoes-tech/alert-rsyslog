@@ -113,6 +113,7 @@ Wt::Dbo::ptr<Syslog> SyslogInsert::getSLOWtDBOPtr() const
 
 void SyslogInsert::sqlInsert(Session &session)
 {
+    logger.entry("debug") << "[SyslogInsert] SLO Insertion";
     try
     {
         Wt::Dbo::Transaction transaction(session);
@@ -133,6 +134,19 @@ void SyslogInsert::sqlInsert(Session &session)
             + _content +
 "  ) RETURNING \"SLO_ID\";");
         setID(session.query<long long>("select currval('\"T_SYSLOG_SLO_SLO_ID_seq\"')"));
+
+        transaction.commit();
+    }
+    catch (Wt::Dbo::Exception e)
+    {
+        logger.entry("error") << "[SyslogInsert] " << e.what();
+    }
+
+    logger.entry("debug") << "[SyslogInsert] Retrieve SLO Ptr for syslog ID: " << _id;
+    try
+    {
+        Wt::Dbo::Transaction transaction(session);    
+
         setSLOWtDBOPtr(session.find<Syslog>().where("\"SLO_ID\" = ?").bind(_id).limit(1));
 
         transaction.commit();

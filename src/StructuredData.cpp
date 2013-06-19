@@ -127,12 +127,22 @@ void StructuredData::createIVAs(Wt::Dbo::ptr<Syslog> sloWtDBOPtr, Session &sessi
             Wt::Dbo::Transaction transaction(session);
 
             sloWtDBOPtr.modify()->state = 1;
-            sloWtDBOPtr.flush();
-            const Wt::WDateTime sendDate = sloWtDBOPtr->sentDate;
 
-            for (unsigned i(0); i < _sdElementsRes.size(); ++i)
-            {
-                const Wt::WDateTime creationDate = sendDate.addSecs(_sdElementsRes[i].getOffset());
+            transaction.commit();
+        }
+        catch (Wt::Dbo::Exception e)
+        {
+            logger.entry("error") << "[StructuredData] " << e.what();
+            return;
+        }
+
+        for (unsigned i(0); i < _sdElementsRes.size(); ++i)
+        {
+            try
+            {   
+                Wt::Dbo::Transaction transaction(session);
+
+                const Wt::WDateTime creationDate = sloWtDBOPtr->sentDate.addSecs(_sdElementsRes[i].getOffset());
                 const vector<SDParamRes> sdParamsRes = _sdElementsRes[i].getSDParamsRes();
 
                 for (unsigned j(0); j < sdParamsRes.size() ; ++j)
@@ -273,7 +283,18 @@ void StructuredData::createIVAs(Wt::Dbo::ptr<Syslog> sloWtDBOPtr, Session &sessi
                     ivaPtr.flush();
                     logger.entry("debug") << "[StructuredData] IVA " << ivaPtr.id() << " created";
                 }
+                transaction.commit();
             }
+            catch (Wt::Dbo::Exception e)
+            {
+                logger.entry("error") << "[StructuredData] " << e.what();
+                return;
+            }
+        }
+
+        try
+        {   
+            Wt::Dbo::Transaction transaction(session);
 
             if (isPartial)
             {   
@@ -285,6 +306,7 @@ void StructuredData::createIVAs(Wt::Dbo::ptr<Syslog> sloWtDBOPtr, Session &sessi
                 logger.entry("debug") << "[StructuredData] SLO " << sloWtDBOPtr.id() << " totally converted into IVA";
                 sloWtDBOPtr.modify()->state = 2;
             }
+
             transaction.commit();
         }
         catch (Wt::Dbo::Exception e)
