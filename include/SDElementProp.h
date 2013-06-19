@@ -20,7 +20,7 @@
 class SDElementProp : public SDElement
 {
     public:
-        SDElementProp(const std::string &content, const long long &syslogID, Session &session);
+        SDElementProp(const std::string &content, Wt::Dbo::ptr<Syslog> sloWtDBOPtr, Session &session);
         SDElementProp(const SDElementProp& orig);
         virtual ~SDElementProp();
 
@@ -42,7 +42,7 @@ class SDElementProp : public SDElement
         void setVersion(unsigned version);
         void findProbeWtDBOPtr(const long long probeID, Session &session);
         void setProbeWtDBOPtr(Wt::Dbo::ptr<Probe> probeWtDBOPtr);
-        void updateSyslog(const long long syslogID, Session &session);
+        void updateSyslog(Wt::Dbo::ptr<Syslog> sloWtDBOPtr, Session &session);
 };
 
 #endif	/* SDELEMENTPROP_H */

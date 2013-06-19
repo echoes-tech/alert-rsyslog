@@ -101,6 +101,16 @@ long long SyslogInsert::getID() const {
     return _id;
 }
 
+void SyslogInsert::setSLOWtDBOPtr(Wt::Dbo::ptr<Syslog> sloWtDBOPtr)
+{
+    _sloWtDBOPtr = sloWtDBOPtr;
+}
+
+Wt::Dbo::ptr<Syslog> SyslogInsert::getSLOWtDBOPtr() const
+{
+    return _sloWtDBOPtr;
+}
+
 void SyslogInsert::sqlInsert(Session &session)
 {
     try
@@ -123,6 +133,7 @@ void SyslogInsert::sqlInsert(Session &session)
             + _content +
 "  ) RETURNING \"SLO_ID\";");
         setID(session.query<long long>("select currval('\"T_SYSLOG_SLO_SLO_ID_seq\"')"));
+        setSLOWtDBOPtr(session.find<Syslog>().where("\"SLO_ID\" = ?").bind(_id).limit(1));
 
         transaction.commit();
     }

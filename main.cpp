@@ -50,7 +50,7 @@ int main(int argc, char** argv) {
                 // Processing the Syslog Insertion and detection Structured Data
                 SyslogInsert syslogInsert(input, session);
 
-                StructuredData sd(syslogInsert.getSD(), syslogInsert.getID(), session);
+                StructuredData sd(syslogInsert.getSD(), syslogInsert.getSLOWtDBOPtr(), session);
             }
             else
                 logger.entry("warning") << "[Main] Input is empty";

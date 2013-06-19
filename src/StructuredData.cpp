@@ -15,17 +15,17 @@
 
 using namespace std;
 
-StructuredData::StructuredData(const string &content, const long long &syslogID, Session &session)
+StructuredData::StructuredData(const string &content, Wt::Dbo::ptr<Syslog> sloWtDBOPtr, Session &session)
 {
     setContent(content);
 
     if (_content.compare(""))
     {
-        splitSDElements(syslogID, session);
+        splitSDElements(sloWtDBOPtr, session);
         if (_sdElementProp)
         {
             if (_sdElementProp->getProbeWtDBOPtr().id() > 0 && _sdElementProp->isValidToken(session))
-                createIVAs(syslogID, session);
+                createIVAs(sloWtDBOPtr, session);
         }
         else
             logger.entry("error") << "[StructuredData] SD Element Prop is empty";
@@ -57,7 +57,7 @@ string StructuredData::getContent() const
     return _content;
 }
 
-void StructuredData::splitSDElements(const long long &syslogID, Session &session)
+void StructuredData::splitSDElements(Wt::Dbo::ptr<Syslog> sloWtDBOPtr, Session &session)
 {
     // Warning : this method doesn't work well if the value of SD-Params can contain the chars '[' ']'
     
@@ -80,7 +80,7 @@ void StructuredData::splitSDElements(const long long &syslogID, Session &session
         SDElement sdElement(sSDElements[i]);
 
         if(!sdElement.getSDID().getName().compare("prop"))
-            setSDElementProp(SDElementProp(sSDElements[i], syslogID, session));
+            setSDElementProp(SDElementProp(sSDElements[i], sloWtDBOPtr, session));
         else
             addSDElementRes(SDElementRes(sSDElements[i]));
     }
@@ -116,21 +116,19 @@ SDElementProp StructuredData::getSDElementProp() const
     return *_sdElementProp;
 }
 
-void StructuredData::createIVAs(const long long &syslogID, Session &session)
+void StructuredData::createIVAs(Wt::Dbo::ptr<Syslog> sloWtDBOPtr, Session &session)
 {
     bool isPartial = false;
 
-    try
-    {   
-        Wt::Dbo::Transaction transaction(session);
+    if (sloWtDBOPtr)
+    {
+        try
+        {   
+            Wt::Dbo::Transaction transaction(session);
 
-        Wt::Dbo::ptr<Syslog> sloPtr = session.find<Syslog>().where("\"SLO_ID\" = ?").bind(syslogID);
-
-        if (sloPtr)
-        {
-            sloPtr.modify()->state = 1;
-            sloPtr.flush();
-            const Wt::WDateTime sendDate = sloPtr->sentDate;
+            sloWtDBOPtr.modify()->state = 1;
+            sloWtDBOPtr.flush();
+            const Wt::WDateTime sendDate = sloWtDBOPtr->sentDate;
 
             for (unsigned i(0); i < _sdElementsRes.size(); ++i)
             {
@@ -263,7 +261,7 @@ void StructuredData::createIVAs(const long long &syslogID, Session &session)
                     informationValueToAdd->value = value;
                     informationValueToAdd->creationDate = creationDate;
                     informationValueToAdd->asset = astPtr;
-                    informationValueToAdd->syslog = sloPtr;
+                    informationValueToAdd->syslog = sloWtDBOPtr;
 
                     if (calculate.empty())
                         informationValueToAdd->state = 0;
@@ -279,24 +277,24 @@ void StructuredData::createIVAs(const long long &syslogID, Session &session)
 
             if (isPartial)
             {   
-                logger.entry("info") << "[StructuredData] SLO " << syslogID << " partially converted into IVA";
-                sloPtr.modify()->state = 3;
+                logger.entry("info") << "[StructuredData] SLO " << sloWtDBOPtr.id() << " partially converted into IVA";
+                sloWtDBOPtr.modify()->state = 3;
             }
             else
             {
-                logger.entry("debug") << "[StructuredData] SLO " << syslogID << " totally converted into IVA";
-                sloPtr.modify()->state = 2;
+                logger.entry("debug") << "[StructuredData] SLO " << sloWtDBOPtr.id() << " totally converted into IVA";
+                sloWtDBOPtr.modify()->state = 2;
             }
+            transaction.commit();
         }
-        else
-            logger.entry("error") << "[StructuredData] Syslog with id : " << syslogID << " doesn't exist.";
-
-        transaction.commit();
+        catch (Wt::Dbo::Exception e)
+        {
+            logger.entry("error") << "[StructuredData] " << e.what();
+            return;
+        }
     }
-    catch (Wt::Dbo::Exception e)
-    {
-        logger.entry("error") << "[StructuredData] " << e.what();
-    }
+    else
+        logger.entry("error") << "[StructuredData] sloWtDBOPtr doesn't exist.";
 
     return;
 }

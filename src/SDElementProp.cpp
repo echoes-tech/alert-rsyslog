@@ -15,10 +15,10 @@
 
 using namespace std;
 
-SDElementProp::SDElementProp(const string &content, const long long &syslogID, Session &session) : SDElement(content)
+SDElementProp::SDElementProp(const string &content, Wt::Dbo::ptr<Syslog> sloWtDBOPtr, Session &session) : SDElement(content)
 {
     detectPropKeys(session);
-    updateSyslog(syslogID, session);
+    updateSyslog(sloWtDBOPtr, session);
 }
 
 SDElementProp::SDElementProp(const SDElementProp& orig) : SDElement(orig)
@@ -156,20 +156,19 @@ Wt::Dbo::ptr<Probe> SDElementProp::getProbeWtDBOPtr() const
     return _probeWtDBOPtr;
 }
 
-void SDElementProp::updateSyslog(const long long syslogID, Session &session)
+void SDElementProp::updateSyslog(Wt::Dbo::ptr<Syslog> sloWtDBOPtr, Session &session)
 {
     try
     {
         Wt::Dbo::Transaction transaction(session);
-        Wt::Dbo::ptr<Syslog> syslogPtr = session.find<Syslog>().where("\"SLO_ID\" = ?").bind(syslogID).limit(1);
 
         if (isValidToken(session))
         {
-            syslogPtr.modify()->version = _version;
-            syslogPtr.modify()->probe = _probeWtDBOPtr;
+            sloWtDBOPtr.modify()->version = _version;
+            sloWtDBOPtr.modify()->probe = _probeWtDBOPtr;
         }
         else
-            syslogPtr.modify()->state = 3;
+            sloWtDBOPtr.modify()->state = 3;
 
         transaction.commit();
     }

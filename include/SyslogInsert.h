@@ -31,10 +31,12 @@ class SyslogInsert {
         std::string getContent() const;
         std::string getSD() const;
         long long getID() const;
+        Wt::Dbo::ptr<Syslog> getSLOWtDBOPtr() const;
 
     private:
         std::string _content, _sd;
         long long _id;
+        Wt::Dbo::ptr<Syslog> _sloWtDBOPtr;
 
         void setContent(std::string input);
         /**
@@ -45,6 +47,7 @@ class SyslogInsert {
         bool detectSD();
         void setSD(std::string _sd);
         void setID(long long id);
+        void setSLOWtDBOPtr(Wt::Dbo::ptr<Syslog> sloWtDBOPtr);
         void sqlInsert(Session &session);
 };
 
