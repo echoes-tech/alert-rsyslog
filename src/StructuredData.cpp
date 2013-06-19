@@ -138,27 +138,28 @@ void StructuredData::createIVAs(Wt::Dbo::ptr<Syslog> sloWtDBOPtr, Session &sessi
 
         for (unsigned i(0); i < _sdElementsRes.size(); ++i)
         {
-            try
-            {   
-                Wt::Dbo::Transaction transaction(session);
+            const Wt::WDateTime creationDate = sloWtDBOPtr->sentDate.addSecs(_sdElementsRes[i].getOffset());
+            const vector<SDParamRes> sdParamsRes = _sdElementsRes[i].getSDParamsRes();
 
-                const Wt::WDateTime creationDate = sloWtDBOPtr->sentDate.addSecs(_sdElementsRes[i].getOffset());
-                const vector<SDParamRes> sdParamsRes = _sdElementsRes[i].getSDParamsRes();
+            for (unsigned j(0); j < sdParamsRes.size() ; ++j)
+            {
+                InformationValue *informationValueToAdd = new InformationValue();
+                const long long idAsset = sdParamsRes[j].getIDAsset();
+                const long long idPlugin = sdParamsRes[j].getIDPlugin();
+                const long long idSource = sdParamsRes[j].getIDSource();
+                const long long idSearch = sdParamsRes[j].getIDSearch();
+                const int valueNum = sdParamsRes[j].getValueNum();
 
-                for (unsigned j(0); j < sdParamsRes.size() ; ++j)
-                {
-                    InformationValue *informationValueToAdd = new InformationValue();
-                    const long long idAsset = sdParamsRes[j].getIDAsset();
-                    const long long idPlugin = sdParamsRes[j].getIDPlugin();
-                    const long long idSource = sdParamsRes[j].getIDSource();
-                    const long long idSearch = sdParamsRes[j].getIDSearch();
-                    const int valueNum = sdParamsRes[j].getValueNum();
+                const string value = Wt::Utils::base64Decode(sdParamsRes[j].getValue());
 
-                    const string value = Wt::Utils::base64Decode(sdParamsRes[j].getValue());
+                informationValueToAdd->lotNumber = sdParamsRes[j].getLotNumber();
+                informationValueToAdd->lineNumber = sdParamsRes[j].getLineNumber();
 
-                    informationValueToAdd->lotNumber = sdParamsRes[j].getLotNumber();
-                    informationValueToAdd->lineNumber = sdParamsRes[j].getLineNumber();
+                try
+                {   
+                    Wt::Dbo::Transaction transaction(session);
 
+                    
                     // we have to check wether the asset exists or not (been deleted ?)
                     Wt::Dbo::ptr<Asset> astPtr = session.find<Asset>()
                             .where("\"AST_ID\" = ?").bind(idAsset)
@@ -282,13 +283,14 @@ void StructuredData::createIVAs(Wt::Dbo::ptr<Syslog> sloWtDBOPtr, Session &sessi
                     Wt::Dbo::ptr<InformationValue> ivaPtr = session.add<InformationValue>(informationValueToAdd);
                     ivaPtr.flush();
                     logger.entry("debug") << "[StructuredData] IVA " << ivaPtr.id() << " created";
+
+                    transaction.commit();
                 }
-                transaction.commit();
-            }
-            catch (Wt::Dbo::Exception e)
-            {
-                logger.entry("error") << "[StructuredData] " << e.what();
-                return;
+                catch (Wt::Dbo::Exception e)
+                {
+                    logger.entry("error") << "[StructuredData] " << e.what();
+                    return;
+                }
             }
         }
 
