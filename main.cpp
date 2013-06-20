@@ -39,11 +39,13 @@ int main(int argc, char** argv) {
     if (conf.getDBPort() != 0)
     {
         string input = "";
+        // Temporary(FPO): to stop regulary the parser to clear the memory
+        unsigned short i = 0;
 
         // Setting the session
         Session session(conf.getSessConnectParams());
 
-        while (!getline(cin, input).eof())
+        while (i++ < 1000 && !getline(cin, input).eof())
         {
             if (input.compare(""))
             {
