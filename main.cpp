@@ -43,20 +43,31 @@ int main(int argc, char** argv) {
         unsigned short i = 0;
 
         // Setting the session
-        Session session(conf.getSessConnectParams());
+        Session *session = new Session(conf.getSessConnectParams());
 
-        while (i++ < 1000 && !getline(cin, input).eof())
+        while (!getline(cin, input).eof())
         {
             if (input.compare(""))
             {
-                // Processing the Syslog Insertion and detection Structured Data
-                SyslogInsert syslogInsert(input, session);
+                // Temporary(FPO): to stop regulary the parser to clear the memory
+                if (++i > 1000)
+                {
+                    logger.entry("debug") << "[Main] Delete session + new Session";
+                    delete session;
+                    session = new Session(conf.getSessConnectParams());
+                }
 
-                StructuredData sd(syslogInsert.getSD(), syslogInsert.getSLOWtDBOPtr(), session);
+                // Processing the Syslog Insertion and detection Structured Data
+                SyslogInsert syslogInsert(input, *session);
+
+                StructuredData sd(syslogInsert.getSD(), syslogInsert.getSLOWtDBOPtr(), *session);
             }
             else
                 logger.entry("warning") << "[Main] Input is empty";
         }
+        
+        delete session;
+        session = NULL;
 
         res = EXIT_SUCCESS;
     }
