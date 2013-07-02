@@ -53,6 +53,7 @@ int main(int argc, char** argv) {
                 if (++i > 1000)
                 {
                     logger.entry("debug") << "[Main] Delete session + new Session";
+                    i = 0;
                     delete session;
                     session = new Session(conf.getSessConnectParams());
                 }
