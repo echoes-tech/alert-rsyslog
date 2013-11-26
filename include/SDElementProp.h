@@ -20,29 +20,29 @@
 class SDElementProp : public SDElement
 {
     public:
-        SDElementProp(const std::string &content, Wt::Dbo::ptr<Syslog> sloWtDBOPtr, Session &session);
+        SDElementProp(const std::string &content, Wt::Dbo::ptr<Echoes::Dbo::Syslog> sloWtDBOPtr, Echoes::Dbo::Session &session);
         SDElementProp(const SDElementProp& orig);
         virtual ~SDElementProp();
 
         std::string getToken() const;
-        bool isValidToken(Session &session) const;
+        bool isValidToken(Echoes::Dbo::Session &session) const;
         long long getProbeID() const;
         unsigned getVersion() const;
-        Wt::Dbo::ptr<Probe> getProbeWtDBOPtr() const;
+        Wt::Dbo::ptr<Echoes::Dbo::Probe> getProbeWtDBOPtr() const;
 
     private:
         unsigned _version;
         long long _probeID;
         std::string _token;
-        Wt::Dbo::ptr<Probe> _probeWtDBOPtr;
+        Wt::Dbo::ptr<Echoes::Dbo::Probe> _probeWtDBOPtr;
 
-        void detectPropKeys(Session &session);
+        void detectPropKeys(Echoes::Dbo::Session &session);
         void setToken(std::string token);
         void setProbeID(long long probeID);
         void setVersion(unsigned version);
-        void findProbeWtDBOPtr(const long long probeID, Session &session);
-        void setProbeWtDBOPtr(Wt::Dbo::ptr<Probe> probeWtDBOPtr);
-        void updateSyslog(Wt::Dbo::ptr<Syslog> sloWtDBOPtr, Session &session);
+        void findProbeWtDBOPtr(const long long probeID, Echoes::Dbo::Session &session);
+        void setProbeWtDBOPtr(Wt::Dbo::ptr<Echoes::Dbo::Probe> probeWtDBOPtr);
+        void updateSyslog(Wt::Dbo::ptr<Echoes::Dbo::Syslog> sloWtDBOPtr, Echoes::Dbo::Session &session);
 };
 
 #endif	/* SDELEMENTPROP_H */

@@ -15,7 +15,7 @@
 
 using namespace std;
 
-StructuredData::StructuredData(const string &content, Wt::Dbo::ptr<Syslog> sloWtDBOPtr, Session &session)
+StructuredData::StructuredData(const string &content, Wt::Dbo::ptr<Echoes::Dbo::Syslog> sloWtDBOPtr, Echoes::Dbo::Session &session)
 {
     setContent(content);
 
@@ -57,7 +57,7 @@ string StructuredData::getContent() const
     return _content;
 }
 
-void StructuredData::splitSDElements(Wt::Dbo::ptr<Syslog> sloWtDBOPtr, Session &session)
+void StructuredData::splitSDElements(Wt::Dbo::ptr<Echoes::Dbo::Syslog> sloWtDBOPtr, Echoes::Dbo::Session &session)
 {
     // Warning : this method doesn't work well if the value of SD-Params can contain the chars '[' ']'
     
@@ -65,16 +65,21 @@ void StructuredData::splitSDElements(Wt::Dbo::ptr<Syslog> sloWtDBOPtr, Session &
     vector<string> sSDElements;
 
     // SD-Element example : [prop@40311 ver=2 probe=0 token="abcdefghijklmo0123456789"][res1@40311 offset=2 4-1-3-4-1-1-1="U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE" 4-1-3-4-2-1-1="U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE"]
+    // nouveau :            [prop@40311 ver=3 probe=0 token="abcdefghijklmo0123456789"][res1@40311 offset=2 lotNum=12 lineNum=7 22="URL_Encode(data)"]
     
     boost::erase_all(sdTmp, "[");
     
     // Example : prop@40311 ver=2 probe=0 token="abcdefghijklmo0123456789"]res1@40311 offset=2 4-1-3-4-1-1-1="U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE" 4-1-3-4-2-1-1="U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE"]
+    // nouveau : prop@40311 ver=3 probe=0 token="abcdefghijklmo0123456789"]res1@40311 offset=2 lotNum=12 lineNum=7 22="URL_Encode(data)"]
 
     boost::split(sSDElements, sdTmp, boost::is_any_of("]"), boost::token_compress_on);
     // Examples :
     // prop@40311 ver=2 probe=0 token="abcdefghijklmo0123456789"
     // res1@40311 offset=2 4-1-3-4-1-1-1="U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE" 4-1-3-4-2-1-1="U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE"
-
+    // nouveau : 
+    // prop@40311 ver=3 probe=0 token="abcdefghijklmo0123456789
+    // res1@40311 offset=2 lotNum=12 lineNum=7 22="URL_Encode(data)"
+    
     for (unsigned i(0); i < sSDElements.size() - 1; ++i)
     {
         SDElement sdElement(sSDElements[i]);
@@ -116,7 +121,7 @@ SDElementProp StructuredData::getSDElementProp() const
     return *_sdElementProp;
 }
 
-void StructuredData::createIVAs(Wt::Dbo::ptr<Syslog> sloWtDBOPtr, Session &session)
+void StructuredData::createIVAs(Wt::Dbo::ptr<Echoes::Dbo::Syslog> sloWtDBOPtr, Echoes::Dbo::Session &session)
 {
     bool isPartial = false;
 
@@ -143,14 +148,14 @@ void StructuredData::createIVAs(Wt::Dbo::ptr<Syslog> sloWtDBOPtr, Session &sessi
 
             for (unsigned j(0); j < sdParamsRes.size() ; ++j)
             {
-                InformationValue *informationValueToAdd = new InformationValue();
-                const long long idAsset = sdParamsRes[j].getIDAsset();
-                const long long idPlugin = sdParamsRes[j].getIDPlugin();
-                const long long idSource = sdParamsRes[j].getIDSource();
-                const long long idSearch = sdParamsRes[j].getIDSearch();
-                const int valueNum = sdParamsRes[j].getValueNum();
+                Echoes::Dbo::InformationValue *informationValueToAdd = new Echoes::Dbo::InformationValue();
+                const long long idIda = sdParamsRes[j].getIdaId();
+//                const long long idPlugin = sdParamsRes[j].getIDPlugin();
+//                const long long idSource = sdParamsRes[j].getIDSource();
+//                const long long idSearch = sdParamsRes[j].getIDSearch();
+//                const int valueNum = sdParamsRes[j].getValueNum();
 
-                const string value = Wt::Utils::base64Decode(sdParamsRes[j].getValue());
+                const string value = Wt::Utils::urlDecode(sdParamsRes[j].getValue());
 
                 informationValueToAdd->lotNumber = sdParamsRes[j].getLotNumber();
                 informationValueToAdd->lineNumber = sdParamsRes[j].getLineNumber();
@@ -161,58 +166,55 @@ void StructuredData::createIVAs(Wt::Dbo::ptr<Syslog> sloWtDBOPtr, Session &sessi
 
                     
                     // we have to check wether the asset exists or not (been deleted ?)
-                    Wt::Dbo::ptr<Asset> astPtr = session.find<Asset>()
-                            .where("\"AST_ID\" = ?").bind(idAsset)
-                            .where("\"AST_DELETE\" IS NULL")
+                    Wt::Dbo::ptr<Echoes::Dbo::InformationData> idaPtr = session.find<Echoes::Dbo::InformationData>()
+                            .where(QUOTE(TRIGRAM_INFORMATION_DATA ID) " = ?").bind(idIda)
+                            .where(QUOTE(TRIGRAM_INFORMATION_DATA SEP "DELETE") " IS NULL")
                             .limit(1);
 
-                    if (!astPtr)
+                    if (!idaPtr)
                     {
-                        logger.entry("error") << "[StructuredData] Asset with id : " << idAsset << " doesn't exist.";
+                        logger.entry("error") << "[StructuredData] Ida with id : " << idIda << " doesn't exist.";
                         delete informationValueToAdd;
                         informationValueToAdd = NULL;
                         isPartial = true;
                         continue;
                     }
 
-                    // we verify the unit of the collected information before saving it linked to an information entry.   
-                    Wt::Dbo::ptr<SearchUnit> seuPtr = session.find<SearchUnit>()
-                            .where("\"PLG_ID_PLG_ID\" = ?").bind(idPlugin)
-                            .where("\"SRC_ID\" = ?").bind(idSource)
-                            .where("\"SEA_ID\" = ?").bind(idSearch)
-                            .where("\"INF_VALUE_NUM\" = ?").bind(valueNum)
-                            .limit(1); 
-
-                    if (!seuPtr)
-                    {
-                        logger.entry("error") << "[StructuredData] No search unit retrieved for: "
-                                    << " Plugin ID = " << idPlugin
-                                    << ", Source ID = " << idSource
-                                    << ", Search ID = " << idSearch
-                                    << ", Value Number = " << valueNum;
-                        delete informationValueToAdd;
-                        informationValueToAdd = NULL;
-                        isPartial = true;
-                        continue;
-                    }
+//                    // we verify the unit of the collected information before saving it linked to an information entry.   
+//                    Wt::Dbo::ptr<Echoes::Dbo::SearchUnit> seuPtr = session.find<Echoes::Dbo::SearchUnit>()
+//                            .where("\"PLG_ID_PLG_ID\" = ?").bind(idPlugin)
+//                            .where("\"SRC_ID\" = ?").bind(idSource)
+//                            .where("\"SEA_ID\" = ?").bind(idSearch)
+//                            .where("\"INF_VALUE_NUM\" = ?").bind(valueNum)
+//                            .limit(1); 
+//
+//                    if (!seuPtr)
+//                    {
+//                        logger.entry("error") << "[StructuredData] No search unit retrieved for: "
+//                                    << " Plugin ID = " << idPlugin
+//                                    << ", Source ID = " << idSource
+//                                    << ", Search ID = " << idSearch
+//                                    << ", Value Number = " << valueNum;
+//                        delete informationValueToAdd;
+//                        informationValueToAdd = NULL;
+//                        isPartial = true;
+//                        continue;
+//                    }
 
                     logger.entry("debug") << "[StructuredData] looking for INF";
-                    Wt::Dbo::ptr<Information2> infPtr = session.find<Information2>()
-                            .where("\"PLG_ID_PLG_ID\" = ?").bind(idPlugin)
-                            .where("\"SRC_ID\" = ?").bind(idSource)
-                            .where("\"SEA_ID\" = ?").bind(idSearch)
-                            .where("\"INF_VALUE_NUM\" = ?").bind(valueNum)
-                            .where("\"INU_ID_INU_ID\" = ?").bind(seuPtr->informationUnit.id())
-                            .limit(1);
+                    Wt::Dbo::ptr<Echoes::Dbo::Information> infPtr = idaPtr->information;
+//                    session.find<Echoes::Dbo::Information>()
+//                            .where("\"PLG_ID_PLG_ID\" = ?").bind(idPlugin)
+//                            .where("\"SRC_ID\" = ?").bind(idSource)
+//                            .where("\"SEA_ID\" = ?").bind(idSearch)
+//                            .where("\"INF_VALUE_NUM\" = ?").bind(valueNum)
+//                            .where("\"INU_ID_INU_ID\" = ?").bind(seuPtr->informationUnit.id())
+//                            .limit(1);
 
                     if (!infPtr)
                     {
                         logger.entry("error") << "[StructuredData] No information retrieved for: "
-                                << " Plugin ID = " << idPlugin
-                                << ", Source ID = " << idSource
-                                << ", Search ID = " << idSearch
-                                << ", Value Number = " << valueNum
-                                << ", Unit ID = " << seuPtr->informationUnit.id();
+                                << " Ida ID = " << idIda;
                         delete informationValueToAdd;
                         informationValueToAdd = NULL;
                         isPartial = true;
@@ -220,7 +222,7 @@ void StructuredData::createIVAs(Wt::Dbo::ptr<Syslog> sloWtDBOPtr, Session &sessi
                     }
 
                     logger.entry("debug") << "[StructuredData] This value is a number ?";
-                    if (infPtr->pk.unit->unitType.id() == Enums::NUMBER)
+                    if (infPtr->informationUnit->unitType.id() == Echoes::Dbo::EInformationUnitType::NUMBER)
                     {
                         try
                         {
@@ -231,12 +233,7 @@ void StructuredData::createIVAs(Wt::Dbo::ptr<Syslog> sloWtDBOPtr, Session &sessi
                         {
                             logger.entry("error")
                                     << "[StructuredData] Values :" << value
-                                    << " seaId : " << idSearch
-                                    << " srcId : " << idSource
-                                    << " plgId : " << idPlugin
-                                    << " valueNum : " << valueNum
-                                    << " astId: " << idAsset
-                                    << " must be a number";
+                                    << " idaId : " << idIda;
                             delete informationValueToAdd;
                             informationValueToAdd = NULL;
                             isPartial = true;
@@ -271,7 +268,7 @@ void StructuredData::createIVAs(Wt::Dbo::ptr<Syslog> sloWtDBOPtr, Session &sessi
                     informationValueToAdd->information = infPtr;
                     informationValueToAdd->value = value;
                     informationValueToAdd->creationDate = creationDate;
-                    informationValueToAdd->asset = astPtr;
+                    informationValueToAdd->asset = idaPtr->asset;
                     informationValueToAdd->syslog = sloWtDBOPtr;
 
                     if (calculate.empty())
@@ -280,7 +277,7 @@ void StructuredData::createIVAs(Wt::Dbo::ptr<Syslog> sloWtDBOPtr, Session &sessi
                         informationValueToAdd->state = 9;
 
                     logger.entry("debug") << "[StructuredData] ivaPtr creation";
-                    Wt::Dbo::ptr<InformationValue> ivaPtr = session.add<InformationValue>(informationValueToAdd);
+                    Wt::Dbo::ptr<Echoes::Dbo::InformationValue> ivaPtr = session.add<Echoes::Dbo::InformationValue>(informationValueToAdd);
                     ivaPtr.flush();
                     logger.entry("debug") << "[StructuredData] IVA " << ivaPtr.id() << " created";
 

@@ -15,7 +15,7 @@
 #define	StructuredData_H
 
 #include <tools/Enums.h>
-#include <tools/SessionPool.h>
+#include <tools/Session.h>
 
 #include "SDElement.h"
 #include "SDElementProp.h"
@@ -23,7 +23,7 @@
 
 class StructuredData {
     public:
-        StructuredData(const std::string &content, Wt::Dbo::ptr<Syslog> sloWtDBOPtr, Session &session);
+        StructuredData(const std::string &content, Wt::Dbo::ptr<Echoes::Dbo::Syslog> sloWtDBOPtr, Echoes::Dbo::Session &session);
         StructuredData(const StructuredData& orig);
         virtual ~StructuredData();
 
@@ -37,11 +37,11 @@ class StructuredData {
         std::vector<SDElementRes> _sdElementsRes;
 
         void setContent(std::string content);
-        void splitSDElements(Wt::Dbo::ptr<Syslog> sloWtDBOPtr, Session &session);
+        void splitSDElements(Wt::Dbo::ptr<Echoes::Dbo::Syslog> sloWtDBOPtr, Echoes::Dbo::Session &session);
         void setSDElementsRes(std::vector<SDElementRes> _sdElementsRes);
         void addSDElementRes(const SDElementRes &sdElementRes);
         void setSDElementProp(SDElementProp sdElementProp);
-        void createIVAs(Wt::Dbo::ptr<Syslog> sloWtDBOPtr, Session &session);
+        void createIVAs(Wt::Dbo::ptr<Echoes::Dbo::Syslog> sloWtDBOPtr, Echoes::Dbo::Session &session);
 };
 
 #endif	/* StructuredData_H */

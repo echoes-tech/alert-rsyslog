@@ -14,7 +14,7 @@
 #ifndef SDELEMENT_H
 #define	SDELEMENT_H
 
-#include <tools/SessionPool.h>
+#include <tools/Session.h>
 
 #include "SDID.h"
 #include "SDParam.h"

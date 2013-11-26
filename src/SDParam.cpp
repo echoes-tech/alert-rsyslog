@@ -54,13 +54,13 @@ void SDParam::splitKeyValue()
 {
     string valueTmp;
 
-    // Example : 4-1-3-4-1-1-1="U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE"
+    // Example : 22="urlEncode(data)"
 
     unsigned pos = _content.find_first_of('=');
 
     setKey(_content.substr(0, pos));
 
-    // Example : "U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE"
+    // Example : "urlEncode(data)"
     valueTmp = _content.substr(pos + 1);
 
     if (boost::starts_with(valueTmp, "\"") && boost::ends_with(valueTmp, "\"") )
@@ -69,7 +69,7 @@ void SDParam::splitKeyValue()
         boost::erase_tail(valueTmp, 1);
     }
 
-    // Example : U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE
+    // Example : urlEncode(data)
     setValue(valueTmp);
 
     return;

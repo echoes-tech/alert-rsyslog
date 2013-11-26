@@ -15,7 +15,7 @@
 
 using namespace std;
 
-SyslogInsert::SyslogInsert(const string &content, Session &session)
+SyslogInsert::SyslogInsert(const string &content, Echoes::Dbo::Session &session)
 {
     // Retrieve Syslog Insertion given by rsyslog
     setContent(content);
@@ -101,17 +101,17 @@ long long SyslogInsert::getID() const {
     return _id;
 }
 
-void SyslogInsert::setSLOWtDBOPtr(Wt::Dbo::ptr<Syslog> sloWtDBOPtr)
+void SyslogInsert::setSLOWtDBOPtr(Wt::Dbo::ptr<Echoes::Dbo::Syslog> sloWtDBOPtr)
 {
     _sloWtDBOPtr = sloWtDBOPtr;
 }
 
-Wt::Dbo::ptr<Syslog> SyslogInsert::getSLOWtDBOPtr() const
+Wt::Dbo::ptr<Echoes::Dbo::Syslog> SyslogInsert::getSLOWtDBOPtr() const
 {
     return _sloWtDBOPtr;
 }
 
-void SyslogInsert::sqlInsert(Session &session)
+void SyslogInsert::sqlInsert(Echoes::Dbo::Session &session)
 {
     logger.entry("debug") << "[SyslogInsert] SLO Insertion";
     try
@@ -147,7 +147,7 @@ void SyslogInsert::sqlInsert(Session &session)
     {
         Wt::Dbo::Transaction transaction(session);    
 
-        setSLOWtDBOPtr(session.find<Syslog>().where("\"SLO_ID\" = ?").bind(_id).limit(1));
+        setSLOWtDBOPtr(session.find<Echoes::Dbo::Syslog>().where("\"SLO_ID\" = ?").bind(_id).limit(1));
 
         transaction.commit();
     }

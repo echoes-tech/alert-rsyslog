@@ -18,12 +18,16 @@ using namespace std;
 SDElementRes::SDElementRes(const string &content) : SDElement(content)
 {
     setOffset(0);
+    setLineNumber(0);
+    setLotNumber(0);
     detectResKeys();
 }
 
 SDElementRes::SDElementRes(const SDElementRes& orig) : SDElement(orig)
 {
     setOffset(orig.getOffset());
+    setLineNumber(orig.getLineNumber());
+    setLotNumber(orig.getLotNumber());
     setSDParamsRes(orig.getSDParamsRes());
 }
 
@@ -35,6 +39,7 @@ void SDElementRes::detectResKeys()
 {
     for (unsigned i(0); i < _sdParams.size(); ++i)
     {
+     
         if (!_sdParams[i].getKey().compare("offset"))
         {
             try
@@ -44,6 +49,28 @@ void SDElementRes::detectResKeys()
             catch (boost::bad_lexical_cast &)
             {
                logger.entry("error") << "[SDElementRes] Offset is not an unsigned on SD-Element Res";
+            }
+        }
+        else if (!_sdParams[i].getKey().compare("lotNum"))
+        {
+            try
+            {
+                setLotNumber(boost::lexical_cast<unsigned>(_sdParams[i].getValue()));
+            }
+            catch (boost::bad_lexical_cast &)
+            {
+               logger.entry("error") << "[SDElementRes] lotNumber is not an unsigned on SD-Element Res";
+            }
+        }
+        else if (!_sdParams[i].getKey().compare("lineNum"))
+        {
+            try
+            {
+                setLineNumber(boost::lexical_cast<unsigned>(_sdParams[i].getValue()));
+            }
+            catch (boost::bad_lexical_cast &)
+            {
+               logger.entry("error") << "[SDElementRes] lineNumber is not an unsigned on SD-Element Res";
             }
         }
         else if (!boost::starts_with(_sdParams[i].getKey(), "res"))
@@ -66,6 +93,30 @@ void SDElementRes::setOffset(unsigned offset)
 unsigned SDElementRes::getOffset() const
 {
     return _offset;
+}
+
+void SDElementRes::setLineNumber(unsigned lineNumber)
+{
+    _lineNumber = lineNumber;
+
+    return;
+}
+
+unsigned SDElementRes::getLineNumber() const
+{
+    return _lineNumber;
+}
+
+void SDElementRes::setLotNumber(unsigned lotNumber)
+{
+    _lotNumber = lotNumber;
+
+    return;
+}
+
+unsigned SDElementRes::getLotNumber() const
+{
+    return _lotNumber;
 }
 
 void SDElementRes::setSDParamsRes(vector<SDParamRes> sdParamsRes)

@@ -113,9 +113,21 @@ void SDElement::splitSDParams()
 {
     vector<string> sSDParams;
 
+    // nouveau 
+    // offset=2 lotNum=12 lineNum=7 22="URL_Encode(data)"
+    
+    // ancien  
     // offset=2 4-1-3-4-1-1-1="U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE" 4-1-3-4-2-1-1="U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE"
 
     boost::split(sSDParams, _sdParamsString, boost::is_any_of(" "), boost::token_compress_on);
+    // nouveau
+    // offset=2 
+    // lotNum=12 
+    // lineNum=7 
+    // 22="URL_Encode(data)"
+    // 24="URL_Encode(data)"
+    
+    // ancien
     // offset=2
     // 4-1-3-4-1-1-1="U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE"
     // 4-1-3-4-2-1-1="U3VjaCBJbnN0YW5jZSBjdXJyZW50bHkgZXhpc3RzIGF0IHRoaXMgT0lE"

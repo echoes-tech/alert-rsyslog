@@ -18,10 +18,6 @@
 
 using namespace std;
 
-SessionPool* SessionPool::instance = 0;
-string SessionPool::credentials = "";
-boost::mutex SessionPool::mutex;
-
 #define SOFTWARE_NAME "ECHOES Alert - Rsyslog Parser"
 #define SOFTWARE_VERSION "0.1.0"
 
@@ -43,7 +39,7 @@ int main(int argc, char** argv) {
         unsigned short i = 0;
 
         // Setting the session
-        Session *session = new Session(conf.getSessConnectParams());
+        Echoes::Dbo::Session *session = new Echoes::Dbo::Session(conf.getSessConnectParams());
 
         while (!getline(cin, input).eof())
         {
@@ -55,7 +51,7 @@ int main(int argc, char** argv) {
                     logger.entry("debug") << "[Main] Delete session + new Session";
                     i = 0;
                     delete session;
-                    session = new Session(conf.getSessConnectParams());
+                    session = new Echoes::Dbo::Session(conf.getSessConnectParams());
                 }
 
                 // Processing the Syslog Insertion and detection Structured Data

@@ -24,14 +24,20 @@ class SDElementRes : public SDElement {
         virtual ~SDElementRes();
 
         unsigned getOffset() const;
+        unsigned getLineNumber() const;
+        unsigned getLotNumber() const;
         std::vector<SDParamRes> getSDParamsRes() const;
 
     private:
         unsigned _offset;
+        unsigned _lineNumber;
+        unsigned _lotNumber;
         std::vector<SDParamRes> _sdParamsRes;
 
         void detectResKeys();
-        void setOffset(unsigned _offset);
+        void setOffset(unsigned offset);
+        void setLineNumber(unsigned lineNumber);
+        void setLotNumber(unsigned lotNumber);
         void addSDParamRes(const SDParamRes &sdParamRes);
         void setSDParamsRes(std::vector<SDParamRes> sdParamsRes);
 };

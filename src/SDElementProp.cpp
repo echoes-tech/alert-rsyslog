@@ -15,7 +15,7 @@
 
 using namespace std;
 
-SDElementProp::SDElementProp(const string &content, Wt::Dbo::ptr<Syslog> sloWtDBOPtr, Session &session) : SDElement(content)
+SDElementProp::SDElementProp(const string &content, Wt::Dbo::ptr<Echoes::Dbo::Syslog> sloWtDBOPtr, Echoes::Dbo::Session &session) : SDElement(content)
 {
     detectPropKeys(session);
     updateSyslog(sloWtDBOPtr, session);
@@ -33,7 +33,7 @@ SDElementProp::~SDElementProp()
 {
 }
 
-void SDElementProp::detectPropKeys(Session &session)
+void SDElementProp::detectPropKeys(Echoes::Dbo::Session &session)
 {
     for (unsigned i(0); i < _sdParams.size(); ++i)
     {
@@ -61,7 +61,9 @@ void SDElementProp::detectPropKeys(Session &session)
             }
         }
         else if (!_sdParams[i].getKey().compare("token"))
+        {
             setToken(_sdParams[i].getValue());
+        }
     }
 
     return;
@@ -79,7 +81,7 @@ string SDElementProp::getToken() const
     return _token;
 }
 
-bool SDElementProp::isValidToken(Session &session) const
+bool SDElementProp::isValidToken(Echoes::Dbo::Session &session) const
 {
     bool res = false;
 
@@ -88,7 +90,7 @@ bool SDElementProp::isValidToken(Session &session) const
         try
         {
             Wt::Dbo::Transaction transaction(session);
-            if (_token.compare(_probeWtDBOPtr->organization->token.toUTF8()))
+            if (_token.compare(_probeWtDBOPtr->asset->organization->token.toUTF8()))
                 logger.entry("error") << "[SDElementProp] Token not matching organization token.";
             else
                 res = true;
@@ -129,34 +131,34 @@ long long SDElementProp::getProbeID() const
     return _probeID;
 }
 
-void SDElementProp::findProbeWtDBOPtr(const long long probeID, Session &session)
+void SDElementProp::findProbeWtDBOPtr(const long long probeID, Echoes::Dbo::Session &session)
 {
     try
     {
         Wt::Dbo::Transaction transaction(session);
-        setProbeWtDBOPtr(session.find<Probe>().where("\"PRB_ID\" = ?").bind(probeID).limit(1));
+        setProbeWtDBOPtr(session.find<Echoes::Dbo::Probe>().where("\"PRB_ID\" = ?").bind(probeID).limit(1));
         transaction.commit();
     }
     catch (Wt::Dbo::Exception e)
     {
-        setProbeWtDBOPtr(Wt::Dbo::ptr<Probe>());
+        setProbeWtDBOPtr(Wt::Dbo::ptr<Echoes::Dbo::Probe>());
         logger.entry("error") << "[SDElementProp] " << e.what();
     }
 
     return;
 }
 
-void SDElementProp::setProbeWtDBOPtr(Wt::Dbo::ptr<Probe> probeWtDBOPtr)
+void SDElementProp::setProbeWtDBOPtr(Wt::Dbo::ptr<Echoes::Dbo::Probe> probeWtDBOPtr)
 {
     _probeWtDBOPtr = probeWtDBOPtr;
 }
 
-Wt::Dbo::ptr<Probe> SDElementProp::getProbeWtDBOPtr() const
+Wt::Dbo::ptr<Echoes::Dbo::Probe> SDElementProp::getProbeWtDBOPtr() const
 {
     return _probeWtDBOPtr;
 }
 
-void SDElementProp::updateSyslog(Wt::Dbo::ptr<Syslog> sloWtDBOPtr, Session &session)
+void SDElementProp::updateSyslog(Wt::Dbo::ptr<Echoes::Dbo::Syslog> sloWtDBOPtr, Echoes::Dbo::Session &session)
 {
     try
     {
