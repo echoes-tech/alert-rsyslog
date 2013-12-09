@@ -265,10 +265,9 @@ void StructuredData::createIVAs(Wt::Dbo::ptr<Echoes::Dbo::Syslog> sloWtDBOPtr, E
                     else
                         logger.entry("debug") << "[StructuredData] No calculation required";
 
-                    informationValueToAdd->information = infPtr;
+                    informationValueToAdd->informationData = idaPtr;
                     informationValueToAdd->value = value;
                     informationValueToAdd->creationDate = creationDate;
-                    informationValueToAdd->asset = idaPtr->asset;
                     informationValueToAdd->syslog = sloWtDBOPtr;
 
                     if (calculate.empty())
