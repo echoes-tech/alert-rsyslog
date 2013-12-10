@@ -163,13 +163,14 @@
         <ccTool>
           <developmentMode>6</developmentMode>
           <stripSymbols>true</stripSymbols>
-          <commandlineTool>g++-4.4</commandlineTool>
+          <standard>8</standard>
+          <commandlineTool>g++</commandlineTool>
           <incDir>
             <pElem>include</pElem>
             <pElem>../dbo/include</pElem>
             <pElem>/var/lib/jenkins/jobs/ea-dbo-${target}/workspace/include</pElem>
           </incDir>
-          <commandLine>-std=c++0x -DNDEBUG</commandLine>
+          <commandLine>-DNDEBUG</commandLine>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>
@@ -183,7 +184,7 @@
             <pElem>/var/lib/jenkins/jobs/ea-dbo-${target}/workspace/default/dist/Release_SharedObject/GNU-Linux-x86</pElem>
           </linkerAddLib>
           <stripSymbols>true</stripSymbols>
-          <commandlineTool>g++-4.4</commandlineTool>
+          <commandlineTool>g++</commandlineTool>
           <linkerLibItems>
             <linkerLibLibItem>dbo</linkerLibLibItem>
             <linkerLibLibItem>wt</linkerLibLibItem>

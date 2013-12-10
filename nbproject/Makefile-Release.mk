@@ -15,8 +15,8 @@ NM=nm
 CCADMIN=CCadmin
 RANLIB=ranlib
 CC=gcc
-CCC=g++-4.4
-CXX=g++-4.4
+CCC=g++
+CXX=g++
 FC=gfortran
 AS=as
 
@@ -52,8 +52,8 @@ OBJECTFILES= \
 CFLAGS=
 
 # CC Compiler Flags
-CCFLAGS=-std=c++0x -DNDEBUG
-CXXFLAGS=-std=c++0x -DNDEBUG
+CCFLAGS=-DNDEBUG
+CXXFLAGS=-DNDEBUG
 
 # Fortran Compiler Flags
 FFLAGS=
@@ -70,62 +70,62 @@ LDLIBSOPTIONS=-L../dbo/dist/Release_SharedObject/GNU-Linux-x86 -L/var/lib/jenkin
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/rsyslog: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	g++-4.4 -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/rsyslog ${OBJECTFILES} ${LDLIBSOPTIONS} -s
+	g++ -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/rsyslog ${OBJECTFILES} ${LDLIBSOPTIONS} -s
 
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O3 -s -Iinclude -I../dbo/include -I/var/lib/jenkins/jobs/ea-dbo-${target}/workspace/include -std=c++0x -DNDEBUG -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
+	$(COMPILE.cc) -O3 -s -Iinclude -I../dbo/include -I/var/lib/jenkins/jobs/ea-dbo-${target}/workspace/include -std=c++11 -DNDEBUG -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
 
 ${OBJECTDIR}/src/Conf.o: src/Conf.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
-	$(COMPILE.cc) -O3 -s -Iinclude -I../dbo/include -I/var/lib/jenkins/jobs/ea-dbo-${target}/workspace/include -std=c++0x -DNDEBUG -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/Conf.o src/Conf.cpp
+	$(COMPILE.cc) -O3 -s -Iinclude -I../dbo/include -I/var/lib/jenkins/jobs/ea-dbo-${target}/workspace/include -std=c++11 -DNDEBUG -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/Conf.o src/Conf.cpp
 
 ${OBJECTDIR}/src/Logger.o: src/Logger.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
-	$(COMPILE.cc) -O3 -s -Iinclude -I../dbo/include -I/var/lib/jenkins/jobs/ea-dbo-${target}/workspace/include -std=c++0x -DNDEBUG -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/Logger.o src/Logger.cpp
+	$(COMPILE.cc) -O3 -s -Iinclude -I../dbo/include -I/var/lib/jenkins/jobs/ea-dbo-${target}/workspace/include -std=c++11 -DNDEBUG -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/Logger.o src/Logger.cpp
 
 ${OBJECTDIR}/src/SDElement.o: src/SDElement.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
-	$(COMPILE.cc) -O3 -s -Iinclude -I../dbo/include -I/var/lib/jenkins/jobs/ea-dbo-${target}/workspace/include -std=c++0x -DNDEBUG -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/SDElement.o src/SDElement.cpp
+	$(COMPILE.cc) -O3 -s -Iinclude -I../dbo/include -I/var/lib/jenkins/jobs/ea-dbo-${target}/workspace/include -std=c++11 -DNDEBUG -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/SDElement.o src/SDElement.cpp
 
 ${OBJECTDIR}/src/SDElementProp.o: src/SDElementProp.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
-	$(COMPILE.cc) -O3 -s -Iinclude -I../dbo/include -I/var/lib/jenkins/jobs/ea-dbo-${target}/workspace/include -std=c++0x -DNDEBUG -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/SDElementProp.o src/SDElementProp.cpp
+	$(COMPILE.cc) -O3 -s -Iinclude -I../dbo/include -I/var/lib/jenkins/jobs/ea-dbo-${target}/workspace/include -std=c++11 -DNDEBUG -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/SDElementProp.o src/SDElementProp.cpp
 
 ${OBJECTDIR}/src/SDElementRes.o: src/SDElementRes.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
-	$(COMPILE.cc) -O3 -s -Iinclude -I../dbo/include -I/var/lib/jenkins/jobs/ea-dbo-${target}/workspace/include -std=c++0x -DNDEBUG -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/SDElementRes.o src/SDElementRes.cpp
+	$(COMPILE.cc) -O3 -s -Iinclude -I../dbo/include -I/var/lib/jenkins/jobs/ea-dbo-${target}/workspace/include -std=c++11 -DNDEBUG -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/SDElementRes.o src/SDElementRes.cpp
 
 ${OBJECTDIR}/src/SDID.o: src/SDID.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
-	$(COMPILE.cc) -O3 -s -Iinclude -I../dbo/include -I/var/lib/jenkins/jobs/ea-dbo-${target}/workspace/include -std=c++0x -DNDEBUG -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/SDID.o src/SDID.cpp
+	$(COMPILE.cc) -O3 -s -Iinclude -I../dbo/include -I/var/lib/jenkins/jobs/ea-dbo-${target}/workspace/include -std=c++11 -DNDEBUG -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/SDID.o src/SDID.cpp
 
 ${OBJECTDIR}/src/SDParam.o: src/SDParam.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
-	$(COMPILE.cc) -O3 -s -Iinclude -I../dbo/include -I/var/lib/jenkins/jobs/ea-dbo-${target}/workspace/include -std=c++0x -DNDEBUG -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/SDParam.o src/SDParam.cpp
+	$(COMPILE.cc) -O3 -s -Iinclude -I../dbo/include -I/var/lib/jenkins/jobs/ea-dbo-${target}/workspace/include -std=c++11 -DNDEBUG -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/SDParam.o src/SDParam.cpp
 
 ${OBJECTDIR}/src/SDParamRes.o: src/SDParamRes.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
-	$(COMPILE.cc) -O3 -s -Iinclude -I../dbo/include -I/var/lib/jenkins/jobs/ea-dbo-${target}/workspace/include -std=c++0x -DNDEBUG -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/SDParamRes.o src/SDParamRes.cpp
+	$(COMPILE.cc) -O3 -s -Iinclude -I../dbo/include -I/var/lib/jenkins/jobs/ea-dbo-${target}/workspace/include -std=c++11 -DNDEBUG -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/SDParamRes.o src/SDParamRes.cpp
 
 ${OBJECTDIR}/src/StructuredData.o: src/StructuredData.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
-	$(COMPILE.cc) -O3 -s -Iinclude -I../dbo/include -I/var/lib/jenkins/jobs/ea-dbo-${target}/workspace/include -std=c++0x -DNDEBUG -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/StructuredData.o src/StructuredData.cpp
+	$(COMPILE.cc) -O3 -s -Iinclude -I../dbo/include -I/var/lib/jenkins/jobs/ea-dbo-${target}/workspace/include -std=c++11 -DNDEBUG -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/StructuredData.o src/StructuredData.cpp
 
 ${OBJECTDIR}/src/SyslogInsert.o: src/SyslogInsert.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
-	$(COMPILE.cc) -O3 -s -Iinclude -I../dbo/include -I/var/lib/jenkins/jobs/ea-dbo-${target}/workspace/include -std=c++0x -DNDEBUG -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/SyslogInsert.o src/SyslogInsert.cpp
+	$(COMPILE.cc) -O3 -s -Iinclude -I../dbo/include -I/var/lib/jenkins/jobs/ea-dbo-${target}/workspace/include -std=c++11 -DNDEBUG -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/SyslogInsert.o src/SyslogInsert.cpp
 
 # Subprojects
 .build-subprojects:
