@@ -23,19 +23,11 @@ class SDParamRes : public SDParam {
         virtual ~SDParamRes();
 
         long long getIdaId() const;
-        int getValueNum() const;        
-        unsigned getLotNumber() const;
-        unsigned getLineNumber() const;
 
     private:
         long long _idaId;
-        int _valueNum;
-        unsigned _lotNumber, _lineNumber;
 
         void setIdaId(long long idaId);
-        void setValueNum(int valueNum);
-        void setLotNumber(unsigned lotNumber);
-        void setLineNumber(unsigned lineNumber);
 };
 
 #endif	/* SDPARAMRES_H */

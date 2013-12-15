@@ -16,17 +16,9 @@ using namespace std;
 
 SDParamRes::SDParamRes(const SDParam& sdParam) : SDParam(sdParam)
 {
-//    vector<string> sIDs;
-//
-//    boost::split(sIDs, _key, boost::is_any_of("-"), boost::token_compress_on);
-
     try
     {
         setIdaId(boost::lexical_cast<long long>(_key));
-        //FIXME
-//        setValueNum(boost::lexical_cast<int>(sIDs[4]));
-//        setLotNumber(boost::lexical_cast<unsigned>(sIDs[5]));
-//        setLineNumber(boost::lexical_cast<unsigned>(sIDs[6]));
     }
     catch (boost::bad_lexical_cast &)
     {
@@ -37,8 +29,6 @@ SDParamRes::SDParamRes(const SDParam& sdParam) : SDParam(sdParam)
 SDParamRes::SDParamRes(const SDParamRes& orig) : SDParam(orig)
 {
     setIdaId(orig.getIdaId());
-    setLotNumber(orig.getLotNumber());
-    setLineNumber(orig.getLineNumber());
 }
 
 SDParamRes::~SDParamRes()
@@ -55,29 +45,5 @@ void SDParamRes::setIdaId(long long idaId)
 long long SDParamRes::getIdaId() const
 {
     return _idaId;
-}
-
-void SDParamRes::setLotNumber(unsigned lotNumber)
-{
-    _lotNumber = lotNumber;
-
-    return;
-}
-
-unsigned SDParamRes::getLotNumber() const
-{
-    return _lotNumber;
-}
-
-void SDParamRes::setLineNumber(unsigned lineNumber)
-{
-    _lineNumber = lineNumber;
-
-    return;
-}
-
-unsigned SDParamRes::getLineNumber() const
-{
-    return _lineNumber;
 }
 

@@ -157,8 +157,8 @@ void StructuredData::createIVAs(Wt::Dbo::ptr<Echoes::Dbo::Syslog> sloWtDBOPtr, E
 
                 const string value = Wt::Utils::urlDecode(sdParamsRes[j].getValue());
 
-                informationValueToAdd->lotNumber = sdParamsRes[j].getLotNumber();
-                informationValueToAdd->lineNumber = sdParamsRes[j].getLineNumber();
+                informationValueToAdd->lotNumber = _sdElementsRes[i].getLotNumber();
+                informationValueToAdd->lineNumber = _sdElementsRes[i].getLineNumber();
 
                 try
                 {   
