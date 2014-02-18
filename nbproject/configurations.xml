@@ -187,9 +187,11 @@
           <commandlineTool>g++</commandlineTool>
           <linkerLibItems>
             <linkerLibLibItem>dbo</linkerLibLibItem>
+            <linkerLibLibItem>wtdbo</linkerLibLibItem>
             <linkerLibLibItem>wt</linkerLibLibItem>
             <linkerLibLibItem>boost_regex</linkerLibLibItem>
             <linkerLibLibItem>boost_system</linkerLibLibItem>
+            <linkerLibLibItem>stdc++</linkerLibLibItem>
           </linkerLibItems>
         </linkerTool>
       </compileType>
