@@ -16,7 +16,7 @@ $ActionOMProgBinary /etc/rsyslog.d/bin/ea-rsyslog
 
 # provides TCP syslog reception
 $ModLoad imtcp
-$InputTCPServerRun 443
+$InputTCPServerRun <%= port %>
 $InputTCPServerBindRuleset echoes-alert
 $InputTCPServerStreamDriverMode 1 # run driver in TLS-only mode
 $InputTCPServerStreamDriverAuthMode anon # client is NOT authenticated
