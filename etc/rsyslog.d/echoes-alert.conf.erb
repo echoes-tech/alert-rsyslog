@@ -11,7 +11,7 @@ $RuleSet echoes-alert
 $template pgsqlinsert,"0, '%app-name%', '%hostname%', '%structured-data%', '%timegenerated:::date-pgsql%', '%timereported:::date-pgsql%', '%PRI%', '%msgid%', %procid%, 0\n"
 
 $ModLoad omprog
-$ActionOMProgBinary /etc/rsyslog.d/bin/ea-rsyslog
+$ActionOMProgBinary <%= bin_file %>
 *.=info         :omprog:;pgsqlinsert
 
 # provides TCP syslog reception
