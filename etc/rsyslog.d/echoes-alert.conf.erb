@@ -5,6 +5,13 @@
 $ModLoad immark
 $MarkMessagePeriod  60 # mark messages appear every 1 Minute
 
+$DefaultNetstreamDriver gtls # Make gtls driver the default
+
+# Certificate files
+$DefaultNetstreamDriverCAFile /etc/ssl/echoes-tech.com/GandiStandardSSLCA.pem
+$DefaultNetstreamDriverCertFile /etc/ssl/echoes-tech.com/cert-echoes-tech.com.crt
+$DefaultNetstreamDriverKeyFile /etc/ssl/echoes-tech.com/echoes-tech.com.key
+
 $RuleSet echoes-alert
 
 # Define PostgreSQL template
@@ -16,17 +23,10 @@ $ActionOMProgBinary <%= bin_file %>
 
 # provides TCP syslog reception
 $ModLoad imtcp
-$InputTCPServerRun <%= port %>
 $InputTCPServerBindRuleset echoes-alert
 $InputTCPServerStreamDriverMode 1 # run driver in TLS-only mode
 $InputTCPServerStreamDriverAuthMode anon # client is NOT authenticated
-
-$DefaultNetstreamDriver gtls # Make gtls driver the default
-
-# Certificate files
-$DefaultNetstreamDriverCAFile /etc/ssl/echoes-tech.com/GandiStandardSSLCA.pem
-$DefaultNetstreamDriverCertFile /etc/ssl/echoes-tech.com/cert-echoes-tech.com.crt
-$DefaultNetstreamDriverKeyFile /etc/ssl/echoes-tech.com/echoes-tech.com.key
+$InputTCPServerRun <%= port %>
 
 # Switch back to the default ruleset:
 $RuleSet RSYSLOG_DefaultRuleset
