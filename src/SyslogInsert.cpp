@@ -11,6 +11,7 @@
  * 
  */
 
+#include <boost/regex.hpp>
 #include "SyslogInsert.h"
 
 using namespace std;
@@ -155,7 +156,28 @@ void SyslogInsert::sqlInsert(Echoes::Dbo::Session &session)
     {
         logger.entry("error") << "[SyslogInsert] " << e.what();
     }
+    
+    try
+    {
+        Wt::Dbo::Transaction transaction(session);    
 
+        boost::smatch m;
+        boost::regex r(".*probe=([0-9]*).*");
+        
+        boost::regex_search(_sd, m, r);
+        logger.entry("debug") << "[SyslogInsert] Retrieve PRB ptr for id: " << m[1];
+        
+        session.execute("UPDATE \"T_PROBE_PRB\"\n"
+        "SET \"PRB_LASTLOG\" = now()\n"
+        "WHERE \"PRB_ID\" = "
+        + m[1]
+        );
+        transaction.commit();
+    }
+    catch (Wt::Dbo::Exception e)
+    {
+        logger.entry("error") << "[SyslogInsert] " << e.what();
+    }
     return;
 }
 
