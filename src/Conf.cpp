@@ -30,7 +30,7 @@ Conf::Conf()
 #ifdef NDEBUG
         boost::property_tree::read_ini("/opt/echoes-alert/rsyslog/etc/ea-parser.conf", pt);
 #else
-        boost::property_tree::read_ini("/opt/echoes-alert/rsyslog/etc/ea-parser.conf", pt);
+        boost::property_tree::read_ini("conf/ea-parser.conf", pt);
 #endif
         setDBhost(pt.get<string>("database.host"));
         setDBport(pt.get<unsigned>("database.port"));

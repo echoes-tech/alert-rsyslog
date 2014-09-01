@@ -161,16 +161,16 @@ void SyslogInsert::sqlInsert(Echoes::Dbo::Session &session)
     {
         Wt::Dbo::Transaction transaction(session);    
 
-        boost::smatch m;
+        boost::smatch probeId;
         boost::regex r(".*probe=([0-9]*).*");
         
-        boost::regex_search(_sd, m, r);
-        logger.entry("debug") << "[SyslogInsert] Retrieve PRB ptr for id: " << m[1];
+        boost::regex_search(_sd, probeId, r);
+        logger.entry("debug") << "[SyslogInsert] Retrieve PRB ptr for id: " << probeId[1];
         
         session.execute("UPDATE \"T_PROBE_PRB\"\n"
         "SET \"PRB_LASTLOG\" = now()\n"
         "WHERE \"PRB_ID\" = "
-        + m[1]
+        + probeId[1]
         );
         transaction.commit();
     }
