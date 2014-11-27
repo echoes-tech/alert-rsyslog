@@ -159,20 +159,23 @@ void SyslogInsert::sqlInsert(Echoes::Dbo::Session &session)
     
     try
     {
-        Wt::Dbo::Transaction transaction(session);    
-
         boost::smatch probeId;
         boost::regex r(".*probe=([0-9]*).*");
         
         boost::regex_search(_sd, probeId, r);
         logger.entry("debug") << "[SyslogInsert] Retrieve PRB ptr for id: " << probeId[1];
         
-        session.execute("UPDATE \"T_PROBE_PRB\"\n"
-        "SET \"PRB_LASTLOG\" = now()\n"
-        "WHERE \"PRB_ID\" = "
-        + probeId[1]
-        );
-        transaction.commit();
+        const string queryStr =
+            " SELECT prb"
+            "   FROM " QUOTE("T_PROBE_PRB") " prb"
+            "   WHERE"
+            "     " QUOTE(TRIGRAM_PROBE ID) " = " + probeId[1];
+        
+        Wt::Dbo::Query<Wt::Dbo::ptr<Echoes::Dbo::Probe>> queryRes = session.query<Wt::Dbo::ptr<Echoes::Dbo::Probe>> (queryStr);
+        
+        Wt::Dbo::ptr<Echoes::Dbo::Probe> prbPtr = queryRes.resultValue();
+        
+        prbPtr.modify()->lastlog = Wt::WDateTime::currentDateTime();
     }
     catch (Wt::Dbo::Exception e)
     {
