@@ -159,6 +159,8 @@ void SyslogInsert::sqlInsert(Echoes::Dbo::Session &session)
     
     try
     {
+        Wt::Dbo::Transaction transaction(session);
+        
         boost::smatch probeId;
         boost::regex r(".*probe=([0-9]*).*");
         
@@ -176,6 +178,8 @@ void SyslogInsert::sqlInsert(Echoes::Dbo::Session &session)
         Wt::Dbo::ptr<Echoes::Dbo::Probe> prbPtr = queryRes.resultValue();
         
         prbPtr.modify()->lastlog = Wt::WDateTime::currentDateTime();
+        
+        transaction.commit();
     }
     catch (Wt::Dbo::Exception e)
     {
