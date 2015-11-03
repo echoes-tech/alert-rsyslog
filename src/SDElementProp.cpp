@@ -90,8 +90,8 @@ bool SDElementProp::isValidToken(Echoes::Dbo::Session &session) const
         try
         {
             Wt::Dbo::Transaction transaction(session);
-            if (_token.compare(_probeWtDBOPtr->asset->organization->token.toUTF8()))
-                logger.entry("error") << "[SDElementProp] Token not matching organization token.";
+            if (_token.compare(_probeWtDBOPtr->asset->group->token.toUTF8()))
+                logger.entry("error") << "[SDElementProp] Token not matching group token.";
             else
                 res = true;
             transaction.commit();
